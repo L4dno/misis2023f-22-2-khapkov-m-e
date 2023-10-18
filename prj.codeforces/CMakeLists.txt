@@ -1,0 +1,1 @@
+add_executable(1879a 1879a.cpp)
