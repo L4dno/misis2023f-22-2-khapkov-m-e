@@ -1,0 +1,1 @@
+add_executable(1862c 1862c.cpp)

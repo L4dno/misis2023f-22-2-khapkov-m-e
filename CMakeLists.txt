@@ -5,4 +5,4 @@ project(khapkov-m-e-22-2)
 set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(prj.codeforces)
-add_subdirectory(prj.cw)
+#add_subdirectory(prj.cw)
