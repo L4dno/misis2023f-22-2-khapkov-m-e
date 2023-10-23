@@ -1,1 +1,2 @@
-add_executable(1862c 1862c.cpp)
+add_executable(1879a 1879a.cpp)
+
