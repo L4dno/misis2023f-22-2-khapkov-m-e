@@ -8,8 +8,3 @@ set(CMAKE_TOOLCHAIN_FILE "C:/src/vcpkg/scripts/buildsystems/vcpkg.cmake")
 add_subdirectory(prj.codeforces)
 #add_subdirectory(prj.cw)
 
-#find_package(glfw3 CONFIG REQUIRED)
-
-
-#DCMAKE_TOOLCHAIN_FILE=C:/src/vcpkg/scripts/buildsystems/vcpkg.cmake
-
