@@ -1,4 +1,4 @@
 OK: file codeforces.id is correct
-OK: folder prj.codeforces structure is correct
-OK: CMake generator successed
-OK: CMake build (MSVC x64) successed
+CHECK: 20231128-214335
+ERROR: invalid file name 20c
+ERROR: CMake generator failed
