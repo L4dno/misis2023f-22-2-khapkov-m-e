@@ -7,9 +7,10 @@
 #include <exception>
 #include <cmath>
 
-//#include <raylib.h>
+#include <raylib.h>
 
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+//#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#define DOCTEST_CONFIG_DISABLE
 #include <doctest/doctest.h>
 
 
@@ -80,6 +81,8 @@ public:
     }
     // returns cords of vertex number i, calculated
     Vertex GetSpecVert(int i) {
+        if (i < 0 || i >= 6)
+            throw std::invalid_argument("not a vertex number");
          float angle_rad = i / 6.0 * 2 * M_PI;
          return Vertex{ center.x + radius * std::cos(angle_rad),
                         center.y + radius * std::sin(angle_rad) };
@@ -93,7 +96,54 @@ public:
         }
         return res;
     }
+
+    // from hex or triangle get simple enum of vertexes
+    std::vector<Vertex> GetMeshData() {
+        std::vector<Vertex> res;
+        const int kVertCount = 3;
+        auto hex_parts = split();
+        for (int i = 0; i < NumOfHexPatches; ++i) {
+            auto first_div = hex_parts[i].split();
+            for (int j = 0; j < NumOfTrianglePatches; ++j) {
+                auto second_div = first_div[j].split();
+                for (int k = 0; k < NumOfTrianglePatches; ++k) {
+                    for (int r = 0; r < kVertCount; ++r) {
+                        res.push_back(second_div[k].GetSpecVert(r));
+                    }
+                }
+            }
+        }
+        return res;
+    }
 };
+
+Mesh TranslateMesh(std::vector<Vertex> tmp) {
+    Mesh mesh = { 0 };
+    mesh.triangleCount = tmp.size()/3;
+    mesh.vertexCount = tmp.size();
+    mesh.vertices = (float*)MemAlloc(mesh.vertexCount * 3 * sizeof(float));
+    
+    for (int i = 0; i < tmp.size();++i) {
+        mesh.vertices[i*3] = tmp[i].x;
+        mesh.vertices[i*3+1] = tmp[i].y;
+        mesh.vertices[i*3+2] = 0;
+    }
+
+    return mesh;
+    
+    //mesh.texcoords = (float*)MemAlloc(mesh.vertexCount * 2 * sizeof(float));
+    //mesh.normals = (float*)MemAlloc(mesh.vertexCount * 3 * sizeof(float));
+
+    //mesh.vertices[0] = 0;
+    //mesh.vertices[1] = 0;
+    //mesh.vertices[2] = 0;
+    ///* mesh.normals[0] = 0;
+    // mesh.normals[1] = 1;
+    // mesh.normals[2] = 0;*/
+    //mesh.texcoords[0] = 0;
+    //mesh.texcoords[1] = 0;
+}
+
 
 TEST_CASE("triangle init") {
     Triangle f();
@@ -127,6 +177,59 @@ TEST_CASE("hexagon split test") {
     Hexagon g({ 0,0 }, 1);
     auto HexParts = g.split();
     CHECK(HexParts[5].GetSpecVert(1) == Vertex{1,0});
+}
+
+TEST_CASE("hexagon division test") {
+    Hexagon h({ 0,0 }, 10);
+    auto mesh = h.GetMeshData();
+    CHECK(mesh.size() == 288);
+}
+
+void ShowMesh(Mesh m) {
+    const int screenWidth = 1080;
+    const int screenHeight = 720;
+
+    InitWindow(screenWidth, screenHeight, "mesh generator");
+
+    Camera camera = { {5.0f, 5.0f,5.0f}, {0.0f,0.0f, 0.0f},
+        {0.0f,1.0f,0.0f},45.0f,CAMERA_PERSPECTIVE };
+
+    Vector3 position = { 0.0f, 0.0f, 0.0f };
+
+    Model ter = LoadModelFromMesh(m);
+    //ter.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texture;
+
+
+    SetTargetFPS(60);
+
+    while (!WindowShouldClose()) {
+        UpdateCamera(&camera, CAMERA_FREE);
+
+        BeginDrawing();
+
+        ClearBackground(RAYWHITE);
+        BeginMode3D(camera);
+        // drawing 3d shapes
+        DrawModel(ter, position, 1.0f, WHITE);
+        //DrawModel(tr., position, 2.0f, WHITE);
+        DrawGrid(10, 1.0);
+        DrawLine3D({ 0,0,0 }, { 0,5.0f,0.0f }, GOLD);
+        DrawLine3D({ 0,0,0 }, { 5.0f,0.0f,0.0f }, LIME);
+        DrawLine3D({ 0,0,0 }, { 0,0.0f,5.0f }, RED);
+        //DrawPoint3D({ 5.0f,5.0f,5.0f }, PURPLE);
+
+        EndMode3D();
+
+        EndDrawing();
+    }
+    UnloadModel(ter);
+}
+
+int main() {
+    Hexagon g({ 0,0 }, 10);
+    auto mesh = g.GetMeshData();
+    ShowMesh(TranslateMesh(mesh));
+    return 0;
 }
 
 
