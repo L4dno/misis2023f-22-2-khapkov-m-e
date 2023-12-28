@@ -14,9 +14,9 @@ TEST_CASE("triangle init") {
 TEST_CASE("triangle split test") {
     Triangle t({ 1,2 }, { 3,4 }, { 1,4 });
     auto new_triangles = t.split();
-    CHECK(new_triangles[0].GetSpecVert(0) == Vertex{ 1, 2 });
-    CHECK(new_triangles[0].GetSpecVert(1) == Vertex{ 2, 3 });
-    CHECK(new_triangles[0].GetSpecVert(2) == Vertex{ 1, 3 });
+    CHECK(new_triangles[2].GetSpecVert(0) == Vertex{ 1, 4 });
+    CHECK(new_triangles[2].GetSpecVert(1) == Vertex{ 1, 2 });
+    CHECK(new_triangles[2].GetSpecVert(2) == Vertex{ 5.0f/3.0f, 10.0f/3.0f });
 }
 
 void PrintHex(Hexagon h) {
@@ -42,5 +42,6 @@ TEST_CASE("hexagon split test") {
 TEST_CASE("hexagon division test") {
     Hexagon h({ 0,0 }, 10);
     auto mesh = h.GetMeshData();
-    CHECK(mesh.size() == 288);
+    CHECK(mesh.size() == NumOfTrianglePatches * NumOfTrianglePatches * 
+                            NumOfHexPatches * TriangleVertsCount);
 }

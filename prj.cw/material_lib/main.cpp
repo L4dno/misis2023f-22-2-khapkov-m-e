@@ -2,14 +2,17 @@
 #include <raylib.h>
 
 Mesh TranslateMesh(std::vector<Vertex> tmp) {
+    GenMeshSphere(2, 32, 32);
+    Image image = LoadImage("resources/heightmap.png");
+    Mesh dfd = GenMeshHeightmap(image, Vector3 { 16, 8, 16 });
     Mesh mesh = { 0 };
     mesh.triangleCount = tmp.size() / 3;
     mesh.vertexCount = tmp.size();
     mesh.vertices = (float*)MemAlloc(mesh.vertexCount * 3 * sizeof(float));
 
     for (int i = 0; i < tmp.size(); ++i) {
-        mesh.vertices[i * 3] = tmp[i].x;
-        mesh.vertices[i * 3 + 1] = tmp[i].y;
+        mesh.vertices[i * 3] = tmp[i].y;
+        mesh.vertices[i * 3 + 1] = tmp[i].x;
         mesh.vertices[i * 3 + 2] = 0;
     }
     UploadMesh(&mesh, false);
@@ -17,10 +20,7 @@ Mesh TranslateMesh(std::vector<Vertex> tmp) {
 }
 
 void ShowMesh(Mesh m) {
-    const int screenWidth = 1080;
-    const int screenHeight = 720;
-
-    InitWindow(screenWidth, screenHeight, "mesh generator");
+    
 
     Camera camera = { {5.0f, 5.0f,5.0f}, {0.0f,0.0f, 0.0f},
         {0.0f,1.0f,0.0f},45.0f,CAMERA_PERSPECTIVE };
@@ -61,8 +61,14 @@ void ShowMesh(Mesh m) {
 }
 
 int main() {
+    const int screenWidth = 1080;
+    const int screenHeight = 720;
+
+    InitWindow(screenWidth, screenHeight, "mesh generator");
     Hexagon g({ 0,0 }, 10);
     auto mesh = g.GetMeshData();
     ShowMesh(TranslateMesh(mesh));
+    //Mesh tmp = TranslateMesh({ {1,2}, {3,4}, {1,4} });
+    //ShowMesh(tmp);
     return 0;
 }
