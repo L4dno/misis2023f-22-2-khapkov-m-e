@@ -1,4 +1,5 @@
-add_executable (test test.cpp)
-target_link_libraries(test PRIVATE glfw)
+#add_executable (test "mesh_generator.hpp" "mesh_generator.cpp" "test_cases.cpp")
+add_executable (test "mesh_generator.hpp" "mesh_generator.cpp" "main.cpp")
+
 target_link_libraries(test PRIVATE doctest::doctest)
-target_link_libraries(test PRIVATE bgfx::bx bgfx::bgfx bgfx::bimg bgfx::bimg_decode)
+target_link_libraries(test PRIVATE raylib)
