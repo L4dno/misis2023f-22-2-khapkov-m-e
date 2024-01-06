@@ -1,10 +1,11 @@
 #include "mesh_generator.hpp"
 #include <raylib.h>
+#include <iterator>
 
 Mesh TranslateMesh(std::vector<Vertex> tmp) {
-    GenMeshSphere(2, 32, 32);
-    Image image = LoadImage("resources/heightmap.png");
-    Mesh dfd = GenMeshHeightmap(image, Vector3 { 16, 8, 16 });
+    //GenMeshSphere(2, 32, 32);
+    //Image image = LoadImage("../../../../../resources/heightmap.png");
+    //Mesh dfd = GenMeshHeightmap(image, Vector3 { 16, 8, 16 });
     Mesh mesh = { 0 };
     mesh.triangleCount = tmp.size() / 3;
     mesh.vertexCount = tmp.size();
@@ -65,10 +66,23 @@ int main() {
     const int screenHeight = 720;
 
     InitWindow(screenWidth, screenHeight, "mesh generator");
-    Hexagon g({ 0,0 }, 10);
+    /*Hexagon g({ 0,0 }, 10);
     auto mesh = g.GetMeshData();
-    ShowMesh(TranslateMesh(mesh));
+    ShowMesh(TranslateMesh(mesh));*/
     //Mesh tmp = TranslateMesh({ {1,2}, {3,4}, {1,4} });
     //ShowMesh(tmp);
+
+    std::vector<Hexagon> grid;
+    InitGrid(grid);
+
+    std::vector<Vertex> mesh;
+    for (auto hex : grid) {
+        auto tmp = hex.GetMeshData();
+        mesh.insert(mesh.end(), std::make_move_iterator(tmp.begin()),
+                                std::make_move_iterator(tmp.end()));
+    }
+    Mesh tmp = TranslateMesh(mesh);
+    ShowMesh(tmp);
+
     return 0;
 }
