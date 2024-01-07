@@ -12,7 +12,7 @@ private:
     const int kNumVerts = 3;
     const int kNumPatches = 3;
 
-    bool isRightTriple(Vector3D a, Vector3D b, Vector3D c) const;
+    bool isCcwOrder(Vector3D a, Vector3D b, Vector3D c) const;
 public:
     Triangle() = default;
     ~Triangle() = default;
@@ -20,12 +20,14 @@ public:
     // order ccw (checking inside)
     Triangle(Vector3D a, Vector3D b, Vector3D c);
 
-    Vector3D& GetSpecVert(int number);
+    Vector3D GetSpecVert(int num) const;
+
+    void SetSpecVertZ(int num, float z);
 
     // func returns cords of smaller fractial triangles
-    std::vector<Triangle> split();
+    std::vector<Triangle> Split() const;
 
-    float GetArea();
+    float GetArea() const;
 };
 
 #endif
