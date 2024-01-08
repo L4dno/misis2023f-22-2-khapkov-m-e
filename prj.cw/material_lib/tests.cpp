@@ -4,6 +4,7 @@
 #include "point.hpp"
 #include "triangle.hpp"
 #include "hexagon.hpp"
+#include "grid.hpp"
 
 TEST_SUITE("vector math") {
 
@@ -98,65 +99,71 @@ TEST_SUITE("hexagon operations") {
 
     TEST_CASE("hexagon construction") {
         Hexagon h(Vector3D{}, 3.0f);
-        CHECK(h.GetSpecVert(2) == Vector3D{0, 3.0f, 3.0f});
-        CHECK(h.GetSpecVert(5) == Vector3D{0, -3.0f, 3.0f });
-        CHECK(h.GetSpecVert(6) == Vector3D{0, 0.0f, 3.0f });
+        CHECK(h.GetSpecVert(2) == Vector3D{0, 3.0f});
+        CHECK(h.GetSpecVert(5) == Vector3D{0, -3.0f});
+        CHECK(h.GetSpecVert(6) == Vector3D{ 0, 0.0f });
     }
 
-    TEST_CASE("hexagon interpolation all flat") {
-        std::vector<Hexagon> grid;
+    TEST_CASE("hexagon z setting") {
 
-        const float HEX_RADIUS = 5.0f;
-
-        const float cell_height = 2.0f * HEX_RADIUS;
-        const float cell_width = std::sqrt(3) * HEX_RADIUS;
-
-        grid.push_back(Hexagon({ cell_width, cell_height / 2.0f }, HEX_RADIUS));
-        grid.push_back(Hexagon({ cell_width * 2.0f, cell_height / 2.0f }, HEX_RADIUS));
-        grid.push_back(Hexagon({ cell_width / 2.0f, cell_height / 4.0f * 5.0f }, HEX_RADIUS));
-        grid.push_back(Hexagon({ cell_width / 2.0f * 3.0f, cell_height / 4.0f * 5.0f }, HEX_RADIUS));
-        grid.push_back(Hexagon({ cell_width / 2.0f * 5.0f, cell_height / 4.0f * 5.0f }, HEX_RADIUS));
-        grid.push_back(Hexagon({ cell_width, cell_height * 2.0f }, HEX_RADIUS));
-        grid.push_back(Hexagon({ cell_width * 2.0f, cell_height * 2.0f }, HEX_RADIUS));
-
-        for (int i = 0; i < grid.size(); ++i) {
-            grid[i].SetLevel(HexLevels::kFirst);
-        }
-
-        for (int i = 0;i < grid.size();++i) {
-            grid[i].RecalculateEdges(grid);
-            for (int j = 0; j < 6; ++j) {
-                CHECK(FloatCompare(grid[i].GetSpecVert(j).z, 5.0f));
-            }
-        }
     }
 
-    TEST_CASE("hexagon interpolation mid up") {
-        std::vector<Hexagon> grid;
+    TEST_CASE("hexagon splitting") {
 
-        const float HEX_RADIUS = 5.0f;
+    }
 
-        const float cell_height = 2.0f * HEX_RADIUS;
-        const float cell_width = std::sqrt(3) * HEX_RADIUS;
+}
 
-        grid.push_back(Hexagon({ cell_width, cell_height / 2.0f }, HEX_RADIUS));
-        grid.push_back(Hexagon({ cell_width * 2.0f, cell_height / 2.0f }, HEX_RADIUS));
-        grid.push_back(Hexagon({ cell_width / 2.0f, cell_height / 4.0f * 5.0f }, HEX_RADIUS));
-        grid.push_back(Hexagon({ cell_width / 2.0f * 3.0f, cell_height / 4.0f * 5.0f }, HEX_RADIUS));
-        grid.push_back(Hexagon({ cell_width / 2.0f * 5.0f, cell_height / 4.0f * 5.0f }, HEX_RADIUS));
-        grid.push_back(Hexagon({ cell_width, cell_height * 2.0f }, HEX_RADIUS));
-        grid.push_back(Hexagon({ cell_width * 2.0f, cell_height * 2.0f }, HEX_RADIUS));
-
-        for (int i = 0; i < grid.size(); ++i) {
-            grid[i].SetLevel(HexLevels::kFirst);
-        }
-        grid[3].SetLevel(HexLevels::kThird);
-        for (int i = 0;i<grid.size();++i) {
-            grid[i].RecalculateEdges(grid);
-        }
-
+TEST_SUITE("grid testing") {
+    
+    TEST_CASE("grid construction in 2d") {
+        Grid g(5.0f);
+        std::vector<Vector3D> first_hex = { {12.9904, 2.5},
+ {12.9904, 7.5},
+ {8.66025, 10},
+ {4.33013, 7.5},
+ {4.33013, 2.5},
+ {8.66025, 0} };
         for (int i = 0; i < 6; ++i) {
-            CHECK(FloatCompare(grid[3].GetSpecVert(i).z, 25.0f/3.0f));
+            bool good = FloatCompare(g.GetHex(0).GetSpecVert(i).x, first_hex[i].x) &&
+                FloatCompare(g.GetHex(0).GetSpecVert(i).y, first_hex[i].y);
+            CHECK(good);
+        }
+    }
+
+    TEST_CASE("grid levels setting") {
+        Grid g(5.0f);
+        for (int i = 0; i < g.Size(); ++i) {
+            if (i != 3)
+                CHECK(FloatCompare(g.GetHex(i).GetSpecVert(6).z, 5.0f));
+            else
+                CHECK(FloatCompare(g.GetHex(i).GetSpecVert(6).z, 15.0f));
+        }
+    }
+
+    TEST_CASE("search for near hexes") {
+        Grid g(5.0f);
+        Vector3D tmp = g.GetHex(0).GetSpecVert(0);
+        CHECK(g.GetHexesNearPoint(tmp) == Vector3D{ 0,1,3 });
+        tmp = g.GetHex(0).GetSpecVert(5);
+        CHECK(g.GetHexesNearPoint(tmp) == Vector3D{ 0,1,2 });
+    }
+
+    TEST_CASE("barycentric calculations test") {
+        Grid g(5.0f);
+        Vector3D p = g.GetHex(3).GetSpecVert(2);
+        CHECK(g.GetBarycentricCords(g.GetHexesNearPoint(p), p) == Vector3D{1.0f/3.0f,
+                                1.0f / 3.0f ,
+                                1.0f / 3.0f });
+        p = g.GetHex(6).GetSpecVert(3);
+        auto res = g.GetBarycentricCords(g.GetHexesNearPoint(p), p);
+        std::cout << res.x << " " << res.y << " " << res.z;
+    }
+
+    TEST_CASE("barycentric interpolation test") {
+        Grid g(5.0f);
+        for (int i = 0; i < 6; ++i) {
+            CHECK(FloatCompare(g.GetHex(3).GetSpecVert(i).z, 25.0f / 3.0f));
         }
     }
 

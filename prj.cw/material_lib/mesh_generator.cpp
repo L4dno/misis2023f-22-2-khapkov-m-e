@@ -37,12 +37,6 @@ std::array<Triangle, NumOfTrianglePatches> Triangle::split() {
     };
 }
 
-Vertex Triangle::GetSpecVert(int number) {
-    if (number < 0 || number >= core.size())
-        throw std::invalid_argument("not a vertex number");
-    return core[number];
-}
-
 std::vector<Vertex> Hexagon::GetMeshData() {
     std::vector<Vertex> res;
     

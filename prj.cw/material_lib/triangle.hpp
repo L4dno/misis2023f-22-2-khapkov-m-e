@@ -16,13 +16,12 @@ private:
 public:
     Triangle() = default;
     ~Triangle() = default;
-
     // order ccw (checking inside)
     Triangle(Vector3D a, Vector3D b, Vector3D c);
 
-    Vector3D GetSpecVert(int num) const;
+    Vector3D GetSpecVert(int v) const;
 
-    void SetSpecVertZ(int num, float z);
+    void SetSpecVertZ(int v, float z);
 
     // func returns cords of smaller fractial triangles
     std::vector<Triangle> Split() const;
