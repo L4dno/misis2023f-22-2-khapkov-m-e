@@ -24,8 +24,6 @@ private:
     std::vector<Hexagon> grid;
     std::vector<HexLevels> grid_levels;
 
-    //void InterpolateVertZ(int v_ind, const std::vector<Hexagon>& grid
-
     // method to fill 2d grid
     void Init();
     // method to set high for hexes on 2d
@@ -41,21 +39,14 @@ public:
 
     int Size() const;
     
-
     // returns vector from three indexes of a closest hexes to a point
     Vector3D GetHexesNearPoint(const Vector3D point) const;
     // returns barycentric coords for a point relative to a three hexes 
     Vector3D GetBarycentricCords(const Vector3D close_hexes, const Vector3D point) const;
 
     Hexagon GetHex(const int ind) const;
-
-    // need method for setting level
-    // with recalculating of a z value for verts
-
-    //void SetHexLevel(HexLevels level);
-    //void RecalculateEdges(const std::vector<Hexagon>& grid);
     
-    //std::vector<Vector3D> GetMeshData() const;
+    std::vector<Vector3D> GetMeshData() const;
 };
 
 #endif

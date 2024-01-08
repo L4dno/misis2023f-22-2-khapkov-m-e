@@ -105,11 +105,18 @@ TEST_SUITE("hexagon operations") {
     }
 
     TEST_CASE("hexagon z setting") {
-
+        Hexagon h(Vector3D{}, 3.0f);
+        h.SetSpecVertZ(0, 5);
+        CHECK(FloatCompare(h.GetSpecVert(0).z, 5.0f));
+        CHECK(FloatCompare(h.GetSpecVert(1).z, 0.0f));
     }
 
     TEST_CASE("hexagon splitting") {
-
+        Hexagon h(Vector3D{}, 3.0f);
+        auto trigs = h.Split();
+        CHECK(trigs[0].GetSpecVert(0) == h.GetSpecVert(0));
+        CHECK(trigs[0].GetSpecVert(1) == h.GetSpecVert(1));
+        CHECK(trigs[0].GetSpecVert(2) == h.GetSpecVert(6));
     }
 
 }
@@ -165,6 +172,12 @@ TEST_SUITE("grid testing") {
         for (int i = 0; i < 6; ++i) {
             CHECK(FloatCompare(g.GetHex(3).GetSpecVert(i).z, 25.0f / 3.0f));
         }
+    }
+
+    TEST_CASE("getting mesh data") {
+        Grid g(5.0f);
+        auto tmp = g.GetMeshData();
+        CHECK(tmp.size() == 6 * 3 * 3 * 7 * 3);//last 3 is a centers??
     }
 
 }

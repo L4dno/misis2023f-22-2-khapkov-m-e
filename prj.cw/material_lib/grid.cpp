@@ -27,6 +27,7 @@ void Grid::SetLevels() {
         grid_levels[i] = HexLevels::kFirst;
     }
     grid_levels[3] = HexLevels::kThird;
+    grid_levels[5] = HexLevels::kFifth;
     for (int i = 0; i < Size(); ++i) {
         grid[i].SetSpecVertZ(6, static_cast<int>(grid_levels[i]) * kRadius);
     }
@@ -93,22 +94,24 @@ Vector3D Grid::GetBarycentricCords(const Vector3D close_hexes, const Vector3D p)
     return bary;
 }
 
-//void Hexagon::SetLevel(HexLevels level) {
-//    height_level = level;
-//    center.z = static_cast<int>(height_level) * kRadius;
-//    
-//}
+std::vector<Vector3D> Grid::GetMeshData() const {
 
-//void Hexagon::RecalculateEdges(const std::vector<Hexagon>& grid) {
-//    for (int i = 0; i < kNumVerts; ++i) {
-//        InterpolateVertZ(i, grid);
-//    }
-//}
+    std::vector<Vector3D> out;
+    out.reserve(Size() * 6 * 3 * 3);
 
-//void Hexagon::InterpolateVertZ(int v_ind, const std::vector<Hexagon>& grid) {
-//    std::vector<int> closest_hexes = GetNearHexes(v_ind, grid);
-//    Vector3D bary = GetBarycentricCords(v_ind, closest_hexes, grid);
-//    verts[v_ind].z = bary.x * grid[closest_hexes[0]].center.z +
-//                     bary.y * grid[closest_hexes[1]].center.z +
-//                     bary.z * grid[closest_hexes[2]].center.z;
-//}
+    for (int u = 0; u < Size(); ++u) {
+        auto hex_parts = grid[u].Split();
+        for (int i = 0; i < 6; ++i) {
+            auto first_div = hex_parts[i].Split();
+            for (int j = 0; j < 3; ++j) {
+                auto second_div = first_div[j].Split();
+                for (int k = 0; k < 3; ++k) {
+                    for (int r = 0; r < 3; ++r) {
+                        out.push_back(second_div[k].GetSpecVert(r));
+                    }
+                }
+            }
+        }
+    }
+    return out;
+}   

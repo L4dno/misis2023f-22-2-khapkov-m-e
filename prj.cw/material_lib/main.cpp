@@ -1,8 +1,9 @@
-#include "mesh_generator.hpp"
+#include "grid.hpp"
+
 #include <raylib.h>
 #include <iterator>
 
-Mesh TranslateMesh(std::vector<Vertex> tmp) {
+Mesh TranslateMesh(std::vector<Vector3D> tmp) {
     //GenMeshSphere(2, 32, 32);
     //Image image = LoadImage("../../../../../resources/heightmap.png");
     //Mesh dfd = GenMeshHeightmap(image, Vector3 { 16, 8, 16 });
@@ -14,7 +15,7 @@ Mesh TranslateMesh(std::vector<Vertex> tmp) {
     for (int i = 0; i < tmp.size(); ++i) {
         mesh.vertices[i * 3] = tmp[i].y;
         mesh.vertices[i * 3 + 1] = tmp[i].x;
-        mesh.vertices[i * 3 + 2] = 0;
+        mesh.vertices[i * 3 + 2] = tmp[i].z;
     }
     UploadMesh(&mesh, false);
     return mesh;
@@ -72,15 +73,9 @@ int main() {
     //Mesh tmp = TranslateMesh({ {1,2}, {3,4}, {1,4} });
     //ShowMesh(tmp);
 
-    std::vector<Hexagon> grid;
-    InitGrid(grid);
-
-    std::vector<Vertex> mesh;
-    for (auto hex : grid) {
-        auto tmp = hex.GetMeshData();
-        mesh.insert(mesh.end(), std::make_move_iterator(tmp.begin()),
-                                std::make_move_iterator(tmp.end()));
-    }
+    Grid g(5.0f);
+    std::vector<Vector3D> mesh = g.GetMeshData();
+    
     Mesh tmp = TranslateMesh(mesh);
     ShowMesh(tmp);
 
