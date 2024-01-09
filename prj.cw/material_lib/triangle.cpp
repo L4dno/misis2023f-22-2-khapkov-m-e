@@ -5,6 +5,8 @@
 Triangle::Triangle(Vector3D a, Vector3D b, Vector3D c) {
     // check on non colinear???
     verts.resize(kNumVerts);
+    tex_cords.resize(kNumVerts);
+
     if (isCcwOrder(a, b, c)) {
         verts[0] = a;
         verts[1] = b;
@@ -29,7 +31,7 @@ Vector3D Triangle::GetSpecVert(int num) const{
     return verts[num];
 }
 
-void Triangle::SetSpecVertZ(int num, float z) {
+void Triangle::SetVertZ(int num, float z) {
     if (num < 0 || num >= kNumVerts)
         throw std::invalid_argument("not a vertex number");
     verts[num].z = z;
@@ -56,4 +58,10 @@ std::vector<Triangle> Triangle::Split() const {
         Triangle(b,c,mid),
         Triangle(c,a,mid),
     };
+}
+
+void Triangle::SetVertTexCords(int v, Vector3D uv) {
+    if (v < 0 || v >= kNumVerts)
+        throw std::invalid_argument("not a vertex number");
+    tex_cords[v] = uv;
 }

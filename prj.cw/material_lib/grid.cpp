@@ -7,6 +7,7 @@ Grid::Grid(float rad) : kRadius(rad) {
     Init();
     SetLevels();
     InterpolateZ();
+    InitTextureCords();
 }
 
 void Grid::Init() {
@@ -27,7 +28,6 @@ void Grid::SetLevels() {
         grid_levels[i] = HexLevels::kFirst;
     }
     grid_levels[3] = HexLevels::kThird;
-    grid_levels[5] = HexLevels::kFifth;
     for (int i = 0; i < Size(); ++i) {
         grid[i].SetSpecVertZ(6, static_cast<int>(grid_levels[i]) * kRadius);
     }
@@ -94,15 +94,20 @@ Vector3D Grid::GetBarycentricCords(const Vector3D close_hexes, const Vector3D p)
     return bary;
 }
 
-std::vector<Vector3D> Grid::GetMeshData() const {
+void Grid::InitTextureCords() {
+    grid_uv.reserve(grid.size());
+    for (int i = 0; i < grid.size();++i) {
+        grid_uv.push_back(Hexagon({ 0.5f,0.5f }, 0.1f));
+    }
+}
 
+std::vector<Vector3D> Grid::GetHexMesh(int ind) const {
     std::vector<Vector3D> out;
-    out.reserve(Size() * 6 * 3 * 3);
+    out.reserve(6 * 3 * 3 * 3);
 
-    for (int u = 0; u < Size(); ++u) {
-        auto hex_parts = grid[u].Split();
+    auto trigs = grid[ind].Split();
         for (int i = 0; i < 6; ++i) {
-            auto first_div = hex_parts[i].Split();
+            auto first_div = trigs[i].Split();
             for (int j = 0; j < 3; ++j) {
                 auto second_div = first_div[j].Split();
                 for (int k = 0; k < 3; ++k) {
@@ -112,6 +117,26 @@ std::vector<Vector3D> Grid::GetMeshData() const {
                 }
             }
         }
-    }
+
     return out;
-}   
+}
+
+std::vector<Vector3D> Grid::GetHexUV(int ind) const {
+    std::vector<Vector3D> out;
+    out.reserve(6 * 3 * 3 * 3);
+
+    auto trigs = grid_uv[ind].Split();
+    for (int i = 0; i < 6; ++i) {
+        auto first_div = trigs[i].Split();
+        for (int j = 0; j < 3; ++j) {
+            auto second_div = first_div[j].Split();
+            for (int k = 0; k < 3; ++k) {
+                for (int r = 0; r < 3; ++r) {
+                    out.push_back(second_div[k].GetSpecVert(r));
+                }
+            }
+        }
+    }
+
+    return out;
+}

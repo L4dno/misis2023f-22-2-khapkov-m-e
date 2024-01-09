@@ -23,6 +23,7 @@ private:
 
     std::vector<Hexagon> grid;
     std::vector<HexLevels> grid_levels;
+    std::vector<Hexagon> grid_uv;
 
     // method to fill 2d grid
     void Init();
@@ -30,6 +31,8 @@ private:
     void SetLevels();
     // calculates verticies z of a hexes
     void InterpolateZ();
+    // set simple text cords
+    void InitTextureCords();
 
 public:
 
@@ -45,8 +48,11 @@ public:
     Vector3D GetBarycentricCords(const Vector3D close_hexes, const Vector3D point) const;
 
     Hexagon GetHex(const int ind) const;
+    //Hexagon GetTextHex(const int ind) const;
     
-    std::vector<Vector3D> GetMeshData() const;
+    std::vector<Vector3D> GetHexMesh(int ind) const;
+    std::vector<Vector3D> GetHexUV(int ind) const;
+    
 };
 
 #endif

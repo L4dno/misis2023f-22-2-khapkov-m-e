@@ -73,7 +73,7 @@ TEST_SUITE("triangle operations") {
     TEST_CASE("triangle z setting") {
         Vector3D a{ 1,2,0 }, b{ 3,4,0 }, c{ 1,4,0 };
         Triangle t(a, b, c);
-        t.SetSpecVertZ(0, 5);
+        t.SetVertZ(0, 5);
         CHECK(t.GetSpecVert(0).z == 5);
         CHECK(t.GetSpecVert(1).z != 5);
         CHECK(t.GetSpecVert(2).z != 5);
@@ -176,8 +176,8 @@ TEST_SUITE("grid testing") {
 
     TEST_CASE("getting mesh data") {
         Grid g(5.0f);
-        auto tmp = g.GetMeshData();
-        CHECK(tmp.size() == 6 * 3 * 3 * 7 * 3);//last 3 is a centers??
+        auto tmp = g.GetHexMesh(0);
+        CHECK(tmp.size() == 6 * 3 * 3 * 3);//last 3 is a centers??
     }
 
 }
