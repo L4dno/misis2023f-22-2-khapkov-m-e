@@ -3,6 +3,9 @@
 
 #include <raylib.h>
 
+#include <string>
+#include <vector>
+
 class Renderer {
 private:
     Model model = { 0 };

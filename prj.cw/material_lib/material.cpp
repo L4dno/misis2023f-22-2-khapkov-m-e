@@ -1,5 +1,11 @@
 #include "include/material_lib/material.hpp"
 
+#include <raymath.h>
+
+#include <string>
+#include <sstream>
+#include <vector>
+
 std::string Renderer::GetObjName(const std::string path, int mesh_ind) {
     std::ostringstream buffer;
     buffer << path << "mesh" << mesh_ind << ".obj";

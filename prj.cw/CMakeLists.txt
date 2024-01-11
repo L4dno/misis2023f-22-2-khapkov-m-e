@@ -1,10 +1,10 @@
 find_package(raylib REQUIRED)
-find_package(Doxygen)
+find_package(Doxygen REQUIRED)
 
 add_executable(test_app "test_app.cpp")
 
 add_subdirectory("material_lib")
-target_link_libraries(test_app PRIVATE material_lib raylib)
+target_link_libraries(test_app PUBLIC material_lib raylib)
 
 set(DOXYGEN_RECURSIVE YES)
 set(DOXYGEN_EXCLUDE_PATTERNS "*/_deps/*")

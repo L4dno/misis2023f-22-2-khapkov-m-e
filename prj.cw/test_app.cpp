@@ -1,14 +1,7 @@
-#include <raylib.h>
-#include <raymath.h>
+#include <material_lib/material.hpp>
 
-#include <iterator>
-#include <string>
 #include <vector>
-#include <filesystem>
-#include <sstream>
-#include <exception>
-#include <iostream>
-
+#include <string>
 
 
 // test app
