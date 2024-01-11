@@ -1,8 +1,9 @@
-#include "mesh_generator.hpp"
+//#include "mesh_generator.hpp"
 #include <iostream>
 #include <cmath>
 
-#define EPS 1e-4
+#include "point.hpp"
+
 
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 //#define DOCTEST_CONFIG_DISABLE
@@ -61,9 +62,7 @@ TEST_CASE("clamping test") {
     CHECK(Clamp(0.8) == 0.8f);
 }
 
-bool Compare(float lhs, float rhs) {
-    return std::abs(lhs - rhs) < EPS;
-}
+
 
 TEST_CASE("smoothstep test") {
     //std::cout << "\n" << SmoothStep(0, 1, 0.29) << "\n";

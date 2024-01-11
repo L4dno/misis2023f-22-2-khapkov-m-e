@@ -1,6 +1,6 @@
 #include <stdexcept>
 
-#include "triangle.hpp"
+#include "include/mesh_generator/triangle.hpp"
 
 Triangle::Triangle(Vector3D a, Vector3D b, Vector3D c) {
     // check on non colinear???

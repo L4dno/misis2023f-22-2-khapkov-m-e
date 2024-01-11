@@ -1,4 +1,4 @@
-#include "grid.hpp"
+#include "include/mesh_generator/grid.hpp"
 
 #include <iostream>
 #include <map>
@@ -28,6 +28,7 @@ void Grid::SetLevels() {
         grid_levels[i] = HexLevels::kFirst;
     }
     grid_levels[3] = HexLevels::kThird;
+    grid_levels[5] = HexLevels::kFifth;
     for (int i = 0; i < Size(); ++i) {
         grid[i].SetSpecVertZ(6, static_cast<int>(grid_levels[i]) * kRadius);
     }

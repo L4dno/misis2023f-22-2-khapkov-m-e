@@ -1,6 +1,6 @@
 #include <cmath>
 
-#include "point.hpp"
+#include "include/mesh_generator/point.hpp"
 
 bool FloatCompare(float lhs, float rhs) {
     const float eps = 1e-4;

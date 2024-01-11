@@ -1,11 +1,10 @@
-add_executable (test "point.hpp" "point.cpp" "tests.cpp" 
-             /   "triangle.cpp" "triangle.hpp"
-             /   "hexagon.cpp" "hexagon.hpp" 
-             /   "grid.hpp" "grid.cpp")
-add_executable (show "point.hpp" "point.cpp" "main.cpp" 
-             /   "triangle.cpp" "triangle.hpp"
-             /   "hexagon.cpp" "hexagon.hpp" 
-             /   "grid.hpp" "grid.cpp")
+add_library(material_lib "material.cpp" "include/material_lib/material.hpp")
+set_property(TARGET material_lib PROPERTY CXX_STANDARD 20)
 
-target_link_libraries(test PRIVATE doctest::doctest)
-target_link_libraries(show PRIVATE raylib)
+target_include_directories(material_lib PUBLIC
+$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+$<INSTALL_INTERFACE:include>
+)
+
+target_link_libraries(material_lib PUBLIC raylib)
+install(TARGETS material_lib)
