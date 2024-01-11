@@ -1,4 +1,2 @@
-OK: file codeforces.id is correct
-CHECK: 20231211-031459
-ERROR: invalid file name 20c
+CHECK: 20240111-160950
 ERROR: CMake generator failed
