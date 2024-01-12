@@ -14,8 +14,8 @@ std::string Renderer::GetObjName(const std::string path, int mesh_ind) {
 
 void Renderer::DrawSelf() {
     Camera camera = { {5.0f, 5.0f,5.0f}, {0.0f,0.0f, 0.0f},
-        {0.0f,1.0f,0.0f},45.0f,CAMERA_ORBITAL };
-    Vector3 position = { 0.0f, 0.0f, -1.0f };
+        {0.0f,1.0f,0.0f},45.0f,CAMERA_FREE };
+    Vector3 position = { 0.0f, -1.0f, -1.0f };
 
     SetTargetFPS(60);
     while (!WindowShouldClose()) {
