@@ -6,4 +6,5 @@ add_executable(generator "generator.cpp"
 )
 set_property(TARGET generator PROPERTY CXX_STANDARD 20)
 
+target_link_libraries(generator PUBLIC raylib)
 install(TARGETS generator DESTINATION bin)

@@ -13,7 +13,7 @@ std::string GetObjName(const std::string path, int mesh_ind);
 int main() {
 
     Grid to_out(5.0f);
-    std::string out_dir = "../../../../../prj.cw/resources/mesh_out";
+    std::string out_dir = "D:/_Projects/misis2023f-22-2-khapkov-m-e/prj.cw/resources/mesh_out";
 
     const int screenWidth = 1080;
     const int screenHeight = 720;

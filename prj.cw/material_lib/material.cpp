@@ -17,6 +17,8 @@ void Renderer::DrawSelf() {
         {0.0f,1.0f,0.0f},45.0f,CAMERA_ORBITAL };
     Vector3 position = { 0.0f, 0.0f, -1.0f };
 
+    Vector3 enemyBoxSize = { 2.0f, 2.0f, 2.0f };
+
     SetTargetFPS(60);
     while (!WindowShouldClose()) {
         UpdateCamera(&camera, CAMERA_FREE);
@@ -25,6 +27,7 @@ void Renderer::DrawSelf() {
 
         ClearBackground(RAYWHITE);
         BeginMode3D(camera);
+        DrawCube(position, enemyBoxSize.x, enemyBoxSize.y, enemyBoxSize.z, GRAY);
         DrawModel(model, position, 1.0f, WHITE);
         EndMode3D();
 
