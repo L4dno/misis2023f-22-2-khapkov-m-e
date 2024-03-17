@@ -32,6 +32,7 @@ private:
     // calculates verticies z of a hexes
     void InterpolateZ();
     // set simple text cords
+    // here we need to normalize them
     void InitTextureCords();
 
 public:
