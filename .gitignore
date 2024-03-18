@@ -35,3 +35,7 @@
 .vs
 out
 build
+bin
+
+# Other
+CmakeSettings.json

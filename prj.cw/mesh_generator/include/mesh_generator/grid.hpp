@@ -21,6 +21,13 @@ private:
     const float kCellHeight = 2.0f * kRadius;
     const float kCellWidth = std::sqrt(3) * kRadius;
 
+    // may be write only configuration like 3x3, 4x4
+
+    float max_x = 0;
+    float max_y = 0;
+    float min_x = 0;
+    float min_y = 0;
+
     std::vector<Hexagon> grid;
     std::vector<HexLevels> grid_levels;
     std::vector<Hexagon> grid_uv;
@@ -53,6 +60,9 @@ public:
     
     std::vector<Vector3D> GetHexMesh(int ind) const;
     std::vector<Vector3D> GetHexUV(int ind) const;
+
+    std::vector<Vector3D> GetGridMesh() const;
+    std::vector<Vector3D> GetGridUV() const;
     
 };
 

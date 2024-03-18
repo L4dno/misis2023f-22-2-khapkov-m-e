@@ -96,12 +96,45 @@ Vector3D Grid::GetBarycentricCords(const Vector3D close_hexes, const Vector3D p)
 }
 
 void Grid::InitTextureCords() {
+
+    // we need to get a x and y of each verts on a plain
+    // than normalize with dest between min and max
+    // UV should be in [0,1]
+
     grid_uv.reserve(grid.size());
     for (int i = 0; i < grid.size();++i) {
         grid_uv.push_back(Hexagon({ 0.5f,0.5f }, 0.1f));
     }
+
 }
 
+std::vector<Vector3D> Grid::GetGridMesh() const {
+    std::vector<Vector3D> out;
+    out.reserve(Size() * 6 * 3 * 3 * 3);
+
+
+    for (int t = 0;t < Size();++t) {
+        auto HexData = GetHexMesh(t);
+        // and unite all single vectors into one
+        out.insert(std::back_inserter(out), HexData.begin(), HexData.end());
+    }
+    return out;
+}
+
+std::vector<Vector3D> Grid::GetGridUV() const {
+    std::vector<Vector3D> out;
+    out.reserve(Size() * 6 * 3 * 3 * 3);
+
+
+    for (int t = 0;t < Size();++t) {
+        auto TexData = GetHexUV(t);
+        // and unite all single vectors into one
+        out.insert(std::back_inserter(out), TexData.begin(), TexData.end());
+    }
+    return out;
+}
+
+// returns vertex data of one hex
 std::vector<Vector3D> Grid::GetHexMesh(int ind) const {
     std::vector<Vector3D> out;
     out.reserve(6 * 3 * 3 * 3);
@@ -122,6 +155,7 @@ std::vector<Vector3D> Grid::GetHexMesh(int ind) const {
     return out;
 }
 
+// returns texture cords of one mesh
 std::vector<Vector3D> Grid::GetHexUV(int ind) const {
     std::vector<Vector3D> out;
     out.reserve(6 * 3 * 3 * 3);
