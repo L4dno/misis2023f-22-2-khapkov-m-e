@@ -12,4 +12,4 @@ add_executable (gen_test "${GEN_PREFIX}point.hpp" "${GEN_PREFIX}/../../point.cpp
                 / "gen_test.cpp")
 
 #target_link_libraries(render_test PUBLIC material_lib raylib doctest)
-target_link_libraries(gen_test PUBLIC raylib)
+target_link_libraries(gen_test PUBLIC raylib doctest::doctest)

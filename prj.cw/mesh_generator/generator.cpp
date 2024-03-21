@@ -62,7 +62,7 @@ Mesh GridToMesh(const Grid& gr) {
 void ExportGrid(const Grid& gr, const std::string path) {
     Mesh out_mesh = GridToMesh(gr);    
         UploadMesh(&out_mesh, false);
-        std::string name = path + "grid_mesh.obj"
+        std::string name = path + "grid_mesh.obj";
         bool is_good = ExportMesh(out_mesh, name.c_str());
         if (!is_good) {
             throw std::exception("cant export mesh");

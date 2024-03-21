@@ -1,6 +1,7 @@
 #include "include/mesh_generator/grid.hpp"
 
 #include <iostream>
+#include <algorithm>
 #include <map>
 
 Grid::Grid(float rad) : kRadius(rad) {
@@ -28,7 +29,7 @@ void Grid::SetLevels() {
         grid_levels[i] = HexLevels::kFirst;
     }
     grid_levels[3] = HexLevels::kThird;
-    grid_levels[5] = HexLevels::kFifth;
+    // grid_levels[5] = HexLevels::kFifth;
     for (int i = 0; i < Size(); ++i) {
         grid[i].SetSpecVertZ(6, static_cast<int>(grid_levels[i]) * kRadius);
     }
@@ -116,7 +117,7 @@ std::vector<Vector3D> Grid::GetGridMesh() const {
     for (int t = 0;t < Size();++t) {
         auto HexData = GetHexMesh(t);
         // and unite all single vectors into one
-        out.insert(std::back_inserter(out), HexData.begin(), HexData.end());
+        std::copy(HexData.begin(), HexData.end(), std::back_inserter(out));
     }
     return out;
 }
@@ -129,7 +130,7 @@ std::vector<Vector3D> Grid::GetGridUV() const {
     for (int t = 0;t < Size();++t) {
         auto TexData = GetHexUV(t);
         // and unite all single vectors into one
-        out.insert(std::back_inserter(out), TexData.begin(), TexData.end());
+        std::copy(TexData.begin(), TexData.end(), std::back_inserter(out));
     }
     return out;
 }
