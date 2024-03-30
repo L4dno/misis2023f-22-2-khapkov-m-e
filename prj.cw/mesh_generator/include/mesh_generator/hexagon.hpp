@@ -26,7 +26,7 @@ public:
     // 6 will return center
     Vector3D GetSpecVert(int v) const;
 
-    void SetSpecVertZ(int v, float z);
+    void SetSpecVert(int num, Vector3D val);
 
     std::vector<Triangle> Split() const;
     

@@ -53,7 +53,7 @@ void ExportGrid(const Grid& gr, const std::string path) {
 
 int main() {
 
-    Grid to_out(5.0f);
+    Grid to_out(3, 5.0f);
     std::string out_dir = "D:/_Projects/misis2023f-22-2-khapkov-m-e/tests/";
 
     const int screenWidth = 1080;
@@ -69,7 +69,8 @@ int main() {
     Vector3 position = { 0.0f, -1.0f, -1.0f };
 
     Image imBlue = GenImageColor(800, 450, Color{ 0, 0, 255, 255 });
-    Texture texBlue = LoadTextureFromImage(imBlue);
+    //Texture texBlue = LoadTextureFromImage(imBlue);
+    Texture texBlue = LoadTexture("D:/_Projects/misis2023f-22-2-khapkov-m-e/resources/sand.jpg");
     UnloadImage(imBlue);
     model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texBlue;
 
@@ -200,9 +201,22 @@ TEST_SUITE("hexagon operations") {
 
     TEST_CASE("hexagon z setting") {
         Hexagon h(Vector3D{}, 3.0f);
-        h.SetSpecVertZ(0, 5);
+        auto tmp = h.GetSpecVert(0);
+        tmp.z = 5;
+        h.SetSpecVert(0, tmp);
         CHECK(FloatCompare(h.GetSpecVert(0).z, 5.0f));
         CHECK(FloatCompare(h.GetSpecVert(1).z, 0.0f));
+    }
+
+    TEST_CASE("hexagon's vertex change") {
+        Hexagon h({}, 3.0f);
+        Vector3D new_pos = { 5,5,5 };
+        h.SetSpecVert(6, new_pos);
+        CHECK(h.GetSpecVert(6) == new_pos);
+        new_pos = { 3,4,8 };
+        h.SetSpecVert(3, new_pos);
+        CHECK(h.GetSpecVert(3) == new_pos);
+        CHECK(h.GetSpecVert(6) == Vector3D{5,5,5});
     }
 
     TEST_CASE("hexagon splitting") {
@@ -218,7 +232,8 @@ TEST_SUITE("hexagon operations") {
 TEST_SUITE("grid testing") {
 
     TEST_CASE("grid construction in 2d") {
-        Grid g(5.0f);
+        Grid g(3, 5.0f);
+        CHECK(g.Size() == 9);
         std::vector<Vector3D> first_hex = { {12.9904, 2.5},
                                             {12.9904, 7.5},
                                             {8.66025, 10},
@@ -230,60 +245,90 @@ TEST_SUITE("grid testing") {
                 FloatCompare(g.GetHex(0).GetSpecVert(i).y, first_hex[i].y);
             CHECK(good);
         }
-    }
 
+        CHECK(g.GetHex(8).GetSpecVert(6) == Vector3D{ 8.66025 * 3, 2.5 * 8, 5.0f });  
+    }
     // works only if 3rd hex is on 3rd level and
     // others are on 1st
     TEST_CASE("grid plain levels setting") {
-        Grid g(5.0f);
+        // all are at first level
+        // except 4 which is on fifth
+        Grid g(3, 5.0f);
         for (int i = 0; i < g.Size(); ++i) {
-            if (i != 3)
+            if (i != 4)
                 CHECK(FloatCompare(g.GetHex(i).GetSpecVert(6).z, 5.0f));
             else
-                CHECK(FloatCompare(g.GetHex(i).GetSpecVert(6).z, 15.0f));
+                CHECK(FloatCompare(g.GetHex(i).GetSpecVert(6).z, 25.0f));
         }
     }
 
     TEST_CASE("search for near hexes") {
-        Grid g(5.0f);
+        Grid g(3, 5.0f);
         Vector3D tmp = g.GetHex(0).GetSpecVert(0);
-        CHECK(g.GetHexesNearPoint(tmp) == Vector3D{ 0,1,3 });
+        Vector3D close = g.GetHexesNearPoint(tmp);
+        CHECK(close == Vector3D{ 0,1,4 });
         tmp = g.GetHex(0).GetSpecVert(5);
-        CHECK(g.GetHexesNearPoint(tmp) == Vector3D{ 0,1,2 });
+        close = g.GetHexesNearPoint(tmp);
+        CHECK(close == Vector3D{ 0,1,3 });
+    }
+
+    TEST_CASE("grid uv setting") {
+        Grid g(3, 5.0f);
+        
+        Hexagon left_down = g.GetTextHex(0);
+        Hexagon right_up = g.GetTextHex(8);
+
+        float Xm = (2 * 3 + 1) / 2.0f * 8.66025;
+        float Ym = (3 * 3 + 1) / 4.0f * 10;
+
+        CHECK(left_down.GetSpecVert(5) == Vector3D{ 8.66025f / Xm, 0.0f,0. });
+        CHECK(left_down.GetSpecVert(3) == Vector3D{ 4.33013f / Xm, 7.5f / Ym,0. });
+        CHECK(FloatCompare(right_up.GetSpecVert(0).x, 1.0f));
+        CHECK(FloatCompare(right_up.GetSpecVert(2).y, 1.0f));
     }
 
     TEST_CASE("barycentric calculations test") {
-        Grid g(5.0f);
-        Vector3D p = g.GetHex(3).GetSpecVert(2);
-        CHECK(g.GetBarycentricCords(g.GetHexesNearPoint(p), p) == Vector3D{ 1.0f / 3.0f,
-                                1.0f / 3.0f ,
+        Grid g(3, 5.0f);
+        // simple center of three hexes
+        Vector3D p = g.GetHex(0).GetSpecVert(1);
+        Vector3D close = g.GetHexesNearPoint(p);
+        Vector3D bar_cords = g.GetBarycentricCords(close, p);
+        CHECK(bar_cords == Vector3D{
+                                1.0f / 3.0f,
+                                1.0f / 3.0f,
                                 1.0f / 3.0f });
-        p = g.GetHex(6).GetSpecVert(3);
-        auto res = g.GetBarycentricCords(g.GetHexesNearPoint(p), p);
-        std::cout << res.x << " " << res.y << " " << res.z;
+        // the most right and top
+        // lies outside any triangle
+        p = g.GetHex(8).GetSpecVert(2);
+        close = g.GetHexesNearPoint(p);
+        auto res = g.GetBarycentricCords(close, p);
+        // 0.571429 0.142857 0.285714
+        // std::cout << res.x << " " << res.y << " " << res.z;
     }
 
     TEST_CASE("barycentric interpolation test") {
-        Grid g(5.0f);
+        Grid g(3, 5.0f);
+        // all are at first level
+        // except 4 which is on fifth
         for (int i = 0; i < 6; ++i) {
-            CHECK(FloatCompare(g.GetHex(3).GetSpecVert(i).z, 25.0f / 3.0f));
+            CHECK(FloatCompare(g.GetHex(4).GetSpecVert(i).z, 35.0f / 3.0f));
         }
     }
 
     TEST_CASE("getting single hex to mesh data") {
-        Grid g(5.0f);
+        Grid g(3, 5.0f);
         auto tmp = g.GetHexMesh(0);
         CHECK(tmp.size() == 6 * 3 * 3 * 3);//last 3 is a centers??
     }
 
     TEST_CASE("converting grid to vector with vertex data") {
-        Grid g(5.0f);
+        Grid g(3, 5.0f);
         auto tmp = g.GetGridMesh();
         CHECK(tmp.size() == g.Size() * 6 * 3 * 3 * 3);
     }
 
     TEST_CASE("converting grid to vector with tex data") {
-        Grid g(5.0f);
+        Grid g(3, 5.0f);
         auto tmp = g.GetGridUV();
         CHECK(tmp.size() == g.Size() * 6 * 3 * 3 * 3);
     }

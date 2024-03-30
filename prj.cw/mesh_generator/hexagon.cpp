@@ -34,11 +34,11 @@ std::vector<Triangle> Hexagon::Split() const {
     return res;
 }
 
-void Hexagon::SetSpecVertZ(int v, float z) {
-    if (v < 0 || v > 6)
+void Hexagon::SetSpecVert(int num, Vector3D point) {
+    if (num < 0 || num > 6)
         throw std::invalid_argument("not a vertex number");
-    if (v == 6)
-        center.z = z;
+    if (num == 6)
+        center = point;
     else 
-        verts[v].z = z;
+        verts[num] = point;
 }

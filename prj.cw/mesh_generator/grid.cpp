@@ -4,22 +4,36 @@
 #include <algorithm>
 #include <map>
 
-Grid::Grid(float rad) : kRadius(rad) {
-    Init();
+Grid::Grid(int size, float rad) : kRadius(rad), kSize(size) {
+    Init(kSize);
     SetLevels();
     InterpolateZ();
     InitTextureCords();
 }
 
-void Grid::Init() {
+void Grid::Init(int rect_size) {
 
-    grid.push_back(Hexagon({ kCellWidth, kCellHeight / 2.0f }, kRadius));
+    float cur_x = 0;
+    float cur_y = 0;
+    for (int row = 0;row < rect_size;++row) {
+        for (int col = 0;col < rect_size;++col) {
+            // row is even -> than offset is Width, or Width/2 otherwise
+            cur_x = kCellWidth * (static_cast<float>(col) + 1.0f - (row % 2) / 2.0f);
+            cur_y = kCellHeight * (1.0f / 2.0f + 3.0f / 4.0f * row);
+            grid.push_back(Hexagon({ cur_x, cur_y }, kRadius));
+        }
+    }
+
+    /*grid.push_back(Hexagon({ kCellWidth, kCellHeight / 2.0f }, kRadius));
     grid.push_back(Hexagon({ kCellWidth * 2.0f, kCellHeight / 2.0f }, kRadius));
     grid.push_back(Hexagon({ kCellWidth / 2.0f, kCellHeight / 4.0f * 5.0f }, kRadius));
     grid.push_back(Hexagon({ kCellWidth / 2.0f * 3.0f, kCellHeight / 4.0f * 5.0f }, kRadius));
     grid.push_back(Hexagon({ kCellWidth / 2.0f * 5.0f, kCellHeight / 4.0f * 5.0f }, kRadius));
     grid.push_back(Hexagon({ kCellWidth, kCellHeight * 2.0f }, kRadius));
-    grid.push_back(Hexagon({ kCellWidth * 2.0f, kCellHeight * 2.0f }, kRadius));
+    grid.push_back(Hexagon({ kCellWidth * 2.0f, kCellHeight * 2.0f }, kRadius));*/
+
+    max_x = kCellWidth * (2 * rect_size + 1) / 2.0f;
+    max_y = kCellHeight * (3 * rect_size + 1) / 4.0f;
 
 }
 
@@ -28,10 +42,11 @@ void Grid::SetLevels() {
     for (int i = 0; i < Size(); ++i) {
         grid_levels[i] = HexLevels::kFirst;
     }
-    grid_levels[3] = HexLevels::kThird;
-    // grid_levels[5] = HexLevels::kFifth;
+    grid_levels[4] = HexLevels::kFifth;
     for (int i = 0; i < Size(); ++i) {
-        grid[i].SetSpecVertZ(6, static_cast<int>(grid_levels[i]) * kRadius);
+        auto tmp = grid[i].GetSpecVert(6);
+        tmp.z = static_cast<int>(grid_levels[i]) * kRadius;
+        grid[i].SetSpecVert(6, tmp);
     }
 }
 
@@ -43,11 +58,31 @@ void Grid::InterpolateZ() {
             Vector3D bary = GetBarycentricCords(near, cur_p);
             float new_z =
                 bary.x * grid[near.x].GetSpecVert(6).z + 
-                bary.y* grid[near.y].GetSpecVert(6).z + 
-                bary.z* grid[near.z].GetSpecVert(6).z;
-            grid[i].SetSpecVertZ(j, new_z);
+                bary.y * grid[near.y].GetSpecVert(6).z + 
+                bary.z * grid[near.z].GetSpecVert(6).z;
+            auto tmp = grid[i].GetSpecVert(j);
+            tmp.z = new_z;
+            grid[i].SetSpecVert(j, tmp);
         }
     }
+}
+
+void Grid::InitTextureCords() {
+
+    // we need to get a x and y of each verts on a plain
+    // than normalize with dest between min and max
+    // UV should be in [0,1]
+
+    grid_uv.reserve(grid.size());
+    for (int i = 0; i < grid.size();++i) {
+        grid_uv.push_back(grid[i]);
+        for (int j = 0;j < 7;++j) {
+            float u = grid_uv[i].GetSpecVert(j).x / max_x;
+            float v = grid_uv[i].GetSpecVert(j).y / max_y;
+            grid_uv[i].SetSpecVert(j, { u,v,0 });
+        }
+    }
+
 }
 
 Hexagon Grid::GetHex(const int ind) const {
@@ -85,6 +120,7 @@ Vector3D Grid::GetBarycentricCords(const Vector3D close_hexes, const Vector3D p)
     Vector3D b = grid[close_hexes.y].GetSpecVert(6);
     Vector3D c = grid[close_hexes.z].GetSpecVert(6);
 
+
     float area_abc = Triangle(a, b, c).GetArea();
     float area_pbc = Triangle(p, b, c).GetArea();
     float area_pca = Triangle(p, c, a).GetArea();
@@ -93,21 +129,31 @@ Vector3D Grid::GetBarycentricCords(const Vector3D close_hexes, const Vector3D p)
     bary.y = area_pca / area_abc;
     bary.z = 1.0f - bary.x - bary.y;
 
+    // Check if any coordinate is negative
+    if (bary.x < 0 || bary.y < 0 || bary.z < 0) {
+        // Treat negative coordinates as distances outside the opposite side
+        if (bary.x < 0) bary.x = -bary.x;
+        if (bary.y < 0) bary.y = -bary.y;
+        if (bary.z < 0) bary.z = -bary.z;
+
+        // Normalize coordinates
+        double total = bary.x + bary.y + bary.z;
+        bary.x /= total;
+        bary.y /= total;
+        bary.z /= total;
+    }
+
     return bary;
 }
 
-void Grid::InitTextureCords() {
-
-    // we need to get a x and y of each verts on a plain
-    // than normalize with dest between min and max
-    // UV should be in [0,1]
-
-    grid_uv.reserve(grid.size());
-    for (int i = 0; i < grid.size();++i) {
-        grid_uv.push_back(Hexagon({ 0.5f,0.5f }, 0.1f));
-    }
-
+Hexagon Grid::GetTextHex(const int ind) const {
+    if (ind < 0 || ind > grid.size())
+        throw std::invalid_argument("not a hex number");
+    return grid_uv[ind];
 }
+
+
+
 
 std::vector<Vector3D> Grid::GetGridMesh() const {
     std::vector<Vector3D> out;
