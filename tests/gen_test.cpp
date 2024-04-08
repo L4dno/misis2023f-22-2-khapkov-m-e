@@ -70,6 +70,8 @@ int main() {
     Vector3 position = { 0.0f, -1.0f, -1.0f };
 
     Image imBlue = GenImageColor(800, 450, Color{ 0, 0, 255, 255 });
+    Image thdhgf = GenImageChecked(800, 450, 10, 10, BLACK, RED);
+    ImageDrawPixel(&imBlue, 50, 50, RED);
     //Texture texBlue = LoadTextureFromImage(imBlue);
     Texture texBlue = LoadTexture("D:/_Projects/misis2023f-22-2-khapkov-m-e/resources/sand.png");
     UnloadImage(imBlue);

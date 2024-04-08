@@ -3,6 +3,7 @@
 #include <raylib.h>
 
 #include <string>
+#include <vector>
 #include <sstream>
 #include <iostream>
 
@@ -12,6 +13,8 @@ std::string GetObjName(const std::string path, int mesh_ind);
 
 // convert one grid to one mesh
 Mesh GridToMesh(const Grid& gr);
+
+void ExportMap(const Grid& gr, const std::vector<int> hex_to_texture, const std::string prefix);
 
 int main() {
 

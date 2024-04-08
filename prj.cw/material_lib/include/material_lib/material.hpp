@@ -8,20 +8,27 @@
 
 class Renderer {
 private:
+    static const int kWindowHeight = 1080;
+    static const int kWindowWidth = 1920;
+    static const int kNumOfTextureBinds = 3;
+
     Model model = { 0 };
-    const int kWindowHeight = 1080;
-    const int kWindowWidth = 1920;
+    Shader shader = { 0 };
+    
+    Image textures[kNumOfTextureBinds];
+    // invariant that masks sum are 1
+    Image masks[kNumOfTextureBinds];
 
-    std::string GetObjName(const std::string path, int mesh_ind);
-
+    // image should have PIXELFORMAT_UNCOMPRESSED_GRAYSCALE format
+    void ApplyGaussianBlur(Image& image, int radius, float sigma);
 public:
     // here we init context
     Renderer();
     // and here we close
     ~Renderer();
-    void LoadMeshData(std::string path, int count);
-    void LoadTexturesData(std::vector<std::string> file_names);
-    void LoadHexToMaterialMap(std::vector<int> hex_mat);
+    void SetMesh(std::string path);
+    void SetTexture(int ind, std::string path);
+    void SetMask(int ind, std::string path);
     void DrawSelf();
 };
 
