@@ -63,6 +63,7 @@ int main() {
     ExportGrid(to_out, out_dir);
 
     Model model = LoadModel("D:/_Projects/misis2023f-22-2-khapkov-m-e/tests/grid_mesh.obj");
+    Model test_cube = LoadModelFromMesh(GenMeshCube(5.0f, 5.0f, 5.0f));
 
     Camera camera = { {5.0f, 5.0f,5.0f}, {0.0f,0.0f, 0.0f},
         {0.0f,0.0f,1.0f},45.0f,CAMERA_FREE };
@@ -70,20 +71,25 @@ int main() {
 
     Image imBlue = GenImageColor(800, 450, Color{ 0, 0, 255, 255 });
     //Texture texBlue = LoadTextureFromImage(imBlue);
-    Texture texBlue = LoadTexture("D:/_Projects/misis2023f-22-2-khapkov-m-e/resources/sand.jpg");
+    Texture texBlue = LoadTexture("D:/_Projects/misis2023f-22-2-khapkov-m-e/resources/sand.png");
     UnloadImage(imBlue);
     model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texBlue;
+    test_cube.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = texBlue;
 
     SetTargetFPS(60);
     while (!WindowShouldClose()) {
         UpdateCamera(&camera, CAMERA_FREE);
 
         BeginDrawing();
-        
         ClearBackground(RAYWHITE);
+
+        /*DrawTexture(texBlue, screenWidth / 2 - texBlue.width / 2, screenHeight / 2 - 
+            texBlue.height / 2 - 40, WHITE);*/
+
         BeginMode3D(camera);
         DrawGrid(20, 5.0f);
         DrawModel(model, position, 1.0f, WHITE);
+        DrawModel(test_cube, position, 1.0f, WHITE);
         EndMode3D();
 
         EndDrawing();
