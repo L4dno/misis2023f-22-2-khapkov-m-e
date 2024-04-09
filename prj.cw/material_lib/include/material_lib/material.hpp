@@ -15,12 +15,16 @@ private:
     Model model = { 0 };
     Shader shader = { 0 };
     
+    // textures can be different in size
     Image textures[kNumOfTextureBinds];
     // invariant that masks sum are 1
+    // also masks should have the same width and height
     Image masks[kNumOfTextureBinds];
 
     // image should have PIXELFORMAT_UNCOMPRESSED_GRAYSCALE format
-    void ApplyGaussianBlur(Image& image, int radius, float sigma);
+    //void ApplyGaussianBlur(Image& image, int radius, float sigma);
+
+    void BlendMasks();
 public:
     // here we init context
     Renderer();
