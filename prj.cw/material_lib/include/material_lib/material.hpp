@@ -30,7 +30,7 @@ private:
 
     //bool isReadyToRender() const;
 
-    void SetImageToShader(const std::string uniform_name, Shader& shader);
+    //void SetImageToShader(const std::string uniform_name, Shader& shader);
 public:
     // here we init context
     Renderer();

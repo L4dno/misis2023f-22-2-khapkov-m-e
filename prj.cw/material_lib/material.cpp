@@ -17,9 +17,59 @@
 //        }
 //    }
 
-void Renderer::SetImageToShader(const std::string uniform_name, Shader& shader) {
+// shader created by gpt
 
-}
+//void Renderer::DrawSelf() {
+//
+//    // here create shader
+//    // initialize it
+//    // and before blur and normalize maps
+//
+//    Camera camera = { 0 };
+//    camera.position = Vector3{ 3.0f, 3.0f, 3.0f };
+//    camera.target = Vector3{ 0.0f, 0.0f, 0.0f };
+//    camera.up = Vector3{ 0.0f, 1.0f, 0.0f };
+//    camera.fovy = 45.0f;
+//    
+//    Vector3 position = { 0.0f, 0.0f, 0.0f };
+//
+//    Shader shader = LoadShader(0, TextFormat("D:/_Projects/misis2023f-22-2-khapkov-m-e/resources/texture_blending.fs", GLSL_VERSION));
+//
+//    // i have only images but i need textures
+//
+//    SetImageToShader("texture0", shader);
+//
+//    SetShaderValue(shader, GetShaderLocation(shader, "texture0"), &textures[0], SHADER_UNIFORM_SAMPLER2D);
+//    SetShaderValue(shader, GetShaderLocation(shader, "texture1"), &textures[1], SHADER_UNIFORM_SAMPLER2D);
+//    SetShaderValue(shader, GetShaderLocation(shader, "texture2"), &textures[2], SHADER_UNIFORM_SAMPLER2D);
+//
+//    SetShaderValue(shader, GetShaderLocation(shader, "weight0"), &masks[0], SHADER_UNIFORM_SAMPLER2D);
+//    SetShaderValue(shader, GetShaderLocation(shader, "weight1"), &masks[1], SHADER_UNIFORM_SAMPLER2D);
+//    SetShaderValue(shader, GetShaderLocation(shader, "weight2"), &masks[2], SHADER_UNIFORM_SAMPLER2D);
+//
+//    SetTargetFPS(60);
+//    while (!WindowShouldClose()) {
+//        UpdateCamera(&camera, CAMERA_FREE);
+//
+//        BeginDrawing();
+//
+//        ClearBackground(RAYWHITE);
+//
+//        BeginMode3D(camera);
+//
+//        BeginShaderMode(shader);
+//
+//        DrawModel(model, position, 1.0f, BLUE);
+//
+//        EndShaderMode();
+//
+//        EndMode3D();
+//
+//        EndDrawing();
+//    }
+//}
+
+// shader created from raylib sample
 
 void Renderer::DrawSelf() {
 
@@ -32,26 +82,28 @@ void Renderer::DrawSelf() {
     camera.target = Vector3{ 0.0f, 0.0f, 0.0f };
     camera.up = Vector3{ 0.0f, 1.0f, 0.0f };
     camera.fovy = 45.0f;
-    
+    camera.projection = CAMERA_PERSPECTIVE;
+
     Vector3 position = { 0.0f, 0.0f, 0.0f };
 
-    Shader shader = LoadShader(0, TextFormat("D:/_Projects/misis2023f-22-2-khapkov-m-e/resources/texture_blending.fs", GLSL_VERSION));
+    Shader shader = LoadShader(0, TextFormat("D:/_Projects/misis2023f-22-2-khapkov-m-e/resources/texture_blending.frag", GLSL_VERSION));
 
+    model.materials[0].shader = shader;
     // i have only images but i need textures
 
-    SetImageToShader("texture0", shader);
-
-    SetShaderValue(shader, GetShaderLocation(shader, "texture0"), &textures[0], SHADER_UNIFORM_SAMPLER2D);
-    SetShaderValue(shader, GetShaderLocation(shader, "texture1"), &textures[1], SHADER_UNIFORM_SAMPLER2D);
-    SetShaderValue(shader, GetShaderLocation(shader, "texture2"), &textures[2], SHADER_UNIFORM_SAMPLER2D);
-
-    SetShaderValue(shader, GetShaderLocation(shader, "weight0"), &masks[0], SHADER_UNIFORM_SAMPLER2D);
-    SetShaderValue(shader, GetShaderLocation(shader, "weight1"), &masks[1], SHADER_UNIFORM_SAMPLER2D);
-    SetShaderValue(shader, GetShaderLocation(shader, "weight2"), &masks[2], SHADER_UNIFORM_SAMPLER2D);
+    
 
     SetTargetFPS(60);
     while (!WindowShouldClose()) {
         UpdateCamera(&camera, CAMERA_FREE);
+
+        SetShaderValue(shader, GetShaderLocation(shader, "texture0"), &textures[0], SHADER_UNIFORM_SAMPLER2D);
+        SetShaderValue(shader, GetShaderLocation(shader, "texture1"), &textures[1], SHADER_UNIFORM_SAMPLER2D);
+        SetShaderValue(shader, GetShaderLocation(shader, "texture2"), &textures[2], SHADER_UNIFORM_SAMPLER2D);
+
+        SetShaderValue(shader, GetShaderLocation(shader, "weight0"), &masks[0], SHADER_UNIFORM_SAMPLER2D);
+        SetShaderValue(shader, GetShaderLocation(shader, "weight1"), &masks[1], SHADER_UNIFORM_SAMPLER2D);
+        SetShaderValue(shader, GetShaderLocation(shader, "weight2"), &masks[2], SHADER_UNIFORM_SAMPLER2D);
 
         BeginDrawing();
 
@@ -59,11 +111,7 @@ void Renderer::DrawSelf() {
 
         BeginMode3D(camera);
 
-        BeginShaderMode(shader);
-
         DrawModel(model, position, 1.0f, BLUE);
-
-        EndShaderMode();
 
         EndMode3D();
 
