@@ -5,8 +5,10 @@ find_package(glad REQUIRED)
 add_executable(ray "shader.cpp")
 add_executable(gla "learn_triangle.cpp")
 #add_executable(sample "triangle.cpp")
+add_executable(gpt "howto.cpp")
 
 
 target_link_libraries(ray PUBLIC raylib)
+target_link_libraries(gpt PUBLIC raylib)
 target_link_libraries(gla PUBLIC glfw)
 target_link_libraries(gla PUBLIC glad::glad)

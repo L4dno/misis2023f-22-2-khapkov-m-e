@@ -87,6 +87,12 @@ void Renderer::DrawSelf() {
     Vector3 position = { 0.0f, 0.0f, 0.0f };
 
     Shader shader = LoadShader(0, TextFormat("D:/_Projects/misis2023f-22-2-khapkov-m-e/resources/texture_blending.frag", GLSL_VERSION));
+    
+    
+    if (!IsShaderReady(shader)) {
+        throw std::exception("cant compile a shader");
+    }
+
 
     model.materials[0].shader = shader;
     // i have only images but i need textures
@@ -97,23 +103,27 @@ void Renderer::DrawSelf() {
     while (!WindowShouldClose()) {
         UpdateCamera(&camera, CAMERA_FREE);
 
-        SetShaderValue(shader, GetShaderLocation(shader, "texture0"), &textures[0], SHADER_UNIFORM_SAMPLER2D);
-        SetShaderValue(shader, GetShaderLocation(shader, "texture1"), &textures[1], SHADER_UNIFORM_SAMPLER2D);
-        SetShaderValue(shader, GetShaderLocation(shader, "texture2"), &textures[2], SHADER_UNIFORM_SAMPLER2D);
+        //BeginShaderMode(shader);
 
-        SetShaderValue(shader, GetShaderLocation(shader, "weight0"), &masks[0], SHADER_UNIFORM_SAMPLER2D);
-        SetShaderValue(shader, GetShaderLocation(shader, "weight1"), &masks[1], SHADER_UNIFORM_SAMPLER2D);
-        SetShaderValue(shader, GetShaderLocation(shader, "weight2"), &masks[2], SHADER_UNIFORM_SAMPLER2D);
+        SetShaderValueTexture(shader, GetShaderLocation(shader, "texture0"), textures[0]);
+        SetShaderValueTexture(shader, GetShaderLocation(shader, "texture1"), textures[1]);
+        SetShaderValueTexture(shader, GetShaderLocation(shader, "texture2"), textures[2]);
+
+        SetShaderValueTexture(shader, GetShaderLocation(shader, "weight0"), masks[0]);
+        SetShaderValueTexture(shader, GetShaderLocation(shader, "weight1"), masks[1]);
+        SetShaderValueTexture(shader, GetShaderLocation(shader, "weight2"), masks[2]);
 
         BeginDrawing();
-
+        
         ClearBackground(RAYWHITE);
-
+        DrawTexture(masks[0], 0, 0, WHITE);
         BeginMode3D(camera);
 
         DrawModel(model, position, 1.0f, BLUE);
 
         EndMode3D();
+
+        //EndShaderMode();
 
         EndDrawing();
     }
@@ -167,6 +177,8 @@ void Renderer::SetMask(int ind, std::string path) {
         throw std::exception("wrong texture index");
 
     Image img = LoadImage(path.c_str());
+
+    ImageBlurGaussian(&img, 1);
 
     if (!IsImageReady(img)) {
         throw std::exception("cant load a mask texture");

@@ -4,6 +4,12 @@
 in vec2 fragTexCoord;
 in vec4 fragColor;
 
+// Output fragment color
+out vec4 finalColor;
+
+//uniform sampler2D texture0; // Fragment input texture (always required, could be a white pixel)
+//uniform vec4 colDiffuse;    // Fragment input color diffuse (multiplied by texture color)
+
 // Input uniform values
 uniform sampler2D texture0;
 uniform sampler2D texture1;
@@ -13,8 +19,7 @@ uniform sampler2D weight0;
 uniform sampler2D weight1;
 uniform sampler2D weight2;
 
-// Output fragment color
-out vec4 finalColor;
+
 
 void main()
 {
