@@ -15,30 +15,21 @@ uniform sampler2D texture0;
 uniform sampler2D texture1;
 uniform sampler2D texture2;
 
-uniform sampler2D weight0;
-uniform sampler2D weight1;
-uniform sampler2D weight2;
+// maps
+uniform sampler2D texture3;
+uniform sampler2D texture4;
+uniform sampler2D texture5;
 
 
 
 void main()
 {
 
- // Output debug message
-    TraceLog(LOG_INFO, "Shader execution started");
-
 
     
-
-    
-    vec4 weightColour0 = texture(weight0, fragTexCoord);
-    vec4 weightColour1 = texture(weight1, fragTexCoord);
-    vec4 weightColour2 = texture(weight2, fragTexCoord);
-
-    // Output debug message with texture sample values
-    TraceLog(LOG_INFO, "weight1: %f, %f, %f, %f", weight0.r, weight0.g, weight0.b, weight0.a);
-    //TraceLog(LOG_INFO, "Color2: %f, %f, %f, %f", color2.r, color2.g, color2.b, color2.a);
-    //TraceLog(LOG_INFO, "Color3: %f, %f, %f, %f", color3.r, color3.g, color3.b, color3.a);
+    vec4 weightColour0 = texture(texture3, fragTexCoord);
+    vec4 weightColour1 = texture(texture4, fragTexCoord);
+    vec4 weightColour2 = texture(texture5, fragTexCoord);
 
     // normalization ???
     vec4 weightColourSum = weightColour0 + weightColour1 + weightColour2;
@@ -51,5 +42,6 @@ void main()
     vec4 texelColor1 = texture(texture1, fragTexCoord);
     vec4 texelColor2 = texture(texture2, fragTexCoord);
     
-    finalColor = texelColor0*weightColour0 + texelColor1*weightColour1 + texelColor2*weightColour2;
+    //finalColor = texelColor0*weightColour0 + texelColor1*weightColour1 + texelColor2*weightColour2;
+    finalColor = weightColour0;
 }

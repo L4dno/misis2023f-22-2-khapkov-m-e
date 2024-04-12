@@ -95,6 +95,14 @@ void Renderer::DrawSelf() {
 
 
     model.materials[0].shader = shader;
+
+    model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = textures[0];
+    model.materials[0].maps[MATERIAL_MAP_SPECULAR].texture = textures[1];
+    model.materials[0].maps[MATERIAL_MAP_NORMAL].texture = textures[2];
+
+    model.materials[0].maps[MATERIAL_MAP_ROUGHNESS].texture = masks[0];
+    model.materials[0].maps[MATERIAL_MAP_OCCLUSION].texture = masks[1];
+    model.materials[0].maps[MATERIAL_MAP_EMISSION].texture = masks[2];
     // i have only images but i need textures
 
     
@@ -105,13 +113,13 @@ void Renderer::DrawSelf() {
 
         //BeginShaderMode(shader);
 
-        SetShaderValueTexture(shader, GetShaderLocation(shader, "texture0"), textures[0]);
+        /*SetShaderValueTexture(shader, GetShaderLocation(shader, "texture0"), textures[0]);
         SetShaderValueTexture(shader, GetShaderLocation(shader, "texture1"), textures[1]);
         SetShaderValueTexture(shader, GetShaderLocation(shader, "texture2"), textures[2]);
 
         SetShaderValueTexture(shader, GetShaderLocation(shader, "weight0"), masks[0]);
         SetShaderValueTexture(shader, GetShaderLocation(shader, "weight1"), masks[1]);
-        SetShaderValueTexture(shader, GetShaderLocation(shader, "weight2"), masks[2]);
+        SetShaderValueTexture(shader, GetShaderLocation(shader, "weight2"), masks[2]);*/
 
         BeginDrawing();
         
@@ -120,11 +128,11 @@ void Renderer::DrawSelf() {
         DrawTexture(masks[2], 0, 0, WHITE);
         BeginMode3D(camera);
 
-        BeginShaderMode(shader);
+        //BeginShaderMode(shader);
 
         DrawModel(model, position, 1.0f, BLUE);
 
-        EndShaderMode();
+        //EndShaderMode();
 
         EndMode3D();
 
