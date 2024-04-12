@@ -1,5 +1,7 @@
 #include "raylib.h"
 
+#define GLSL_VERSION 330
+
 int main() {
     // Initialization
     const int screenWidth = 800;
@@ -18,15 +20,16 @@ int main() {
     Texture2D weightMap3 = LoadTexture("i.png");
 
     // Load shader
-    Shader shader = LoadShader("multitexture_shader.vs", "multitexture_shader.fs");
+    Shader shader = LoadShader(0, 
+        TextFormat("D:/_Projects/misis2023f-22-2-khapkov-m-e/resources/texture_blending.frag", GLSL_VERSION));
 
     // Set shader values
-    SetShaderValueTexture(shader, GetShaderLocation(shader, "texture1"), texture1);
+    /*SetShaderValueTexture(shader, GetShaderLocation(shader, "texture1"), texture1);
     SetShaderValueTexture(shader, GetShaderLocation(shader, "texture2"), texture2);
     SetShaderValueTexture(shader, GetShaderLocation(shader, "texture3"), texture3);
     SetShaderValueTexture(shader, GetShaderLocation(shader, "weightMap1"), weightMap1);
     SetShaderValueTexture(shader, GetShaderLocation(shader, "weightMap2"), weightMap2);
-    SetShaderValueTexture(shader, GetShaderLocation(shader, "weightMap3"), weightMap3);
+    SetShaderValueTexture(shader, GetShaderLocation(shader, "weightMap3"), weightMap3);*/
 
     // Main loop
     while (!WindowShouldClose()) {
@@ -39,7 +42,7 @@ int main() {
         BeginShaderMode(shader);
 
         // Draw model with shader applied
-        DrawModel(model, (Vector3) { 0.0f, 0.0f, 0.0f }, 1.0f, WHITE);
+        DrawModel(model, Vector3 { 0.0f, 0.0f, 0.0f }, 1.0f, WHITE);
 
         EndShaderMode();
 

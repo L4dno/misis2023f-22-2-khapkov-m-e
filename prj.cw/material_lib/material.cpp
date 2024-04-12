@@ -1,4 +1,4 @@
-#include "include/material_lib/material.hpp"
+﻿#include "include/material_lib/material.hpp"
 
 #include <raymath.h>
 
@@ -116,10 +116,15 @@ void Renderer::DrawSelf() {
         BeginDrawing();
         
         ClearBackground(RAYWHITE);
-        DrawTexture(masks[0], 0, 0, WHITE);
+        // если выводить текстуру, то шейдер работает норм
+        DrawTexture(masks[2], 0, 0, WHITE);
         BeginMode3D(camera);
 
+        BeginShaderMode(shader);
+
         DrawModel(model, position, 1.0f, BLUE);
+
+        EndShaderMode();
 
         EndMode3D();
 

@@ -23,10 +23,22 @@ uniform sampler2D weight2;
 
 void main()
 {
+
+ // Output debug message
+    TraceLog(LOG_INFO, "Shader execution started");
+
+
+    
+
     
     vec4 weightColour0 = texture(weight0, fragTexCoord);
     vec4 weightColour1 = texture(weight1, fragTexCoord);
     vec4 weightColour2 = texture(weight2, fragTexCoord);
+
+    // Output debug message with texture sample values
+    TraceLog(LOG_INFO, "weight1: %f, %f, %f, %f", weight0.r, weight0.g, weight0.b, weight0.a);
+    //TraceLog(LOG_INFO, "Color2: %f, %f, %f, %f", color2.r, color2.g, color2.b, color2.a);
+    //TraceLog(LOG_INFO, "Color3: %f, %f, %f, %f", color3.r, color3.g, color3.b, color3.a);
 
     // normalization ???
     vec4 weightColourSum = weightColour0 + weightColour1 + weightColour2;
