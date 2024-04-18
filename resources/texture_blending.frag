@@ -2,46 +2,40 @@
 
 // Input vertex attributes (from vertex shader)
 in vec2 fragTexCoord;
-in vec4 fragColor;
 
 // Output fragment color
 out vec4 finalColor;
 
-//uniform sampler2D texture0; // Fragment input texture (always required, could be a white pixel)
-//uniform vec4 colDiffuse;    // Fragment input color diffuse (multiplied by texture color)
-
 // Input uniform values
-uniform sampler2D texture0;
-uniform sampler2D texture1;
-uniform sampler2D texture2;
-
-// maps
 uniform sampler2D texture3;
 uniform sampler2D texture4;
 uniform sampler2D texture5;
 
-
+// masks
+uniform sampler2D texture6;
+uniform sampler2D texture7;
+uniform sampler2D texture8;
 
 void main()
 {
+    // Sample colors from textures and weight maps
+    vec4 color1 = texture(texture3, fragTexCoord);
+    vec4 color2 = texture(texture4, fragTexCoord);
+    vec4 color3 = texture(texture5, fragTexCoord);
 
+    vec4 weight1 = texture(texture6, fragTexCoord);
+    vec4 weight2 = texture(texture7, fragTexCoord);
+    vec4 weight3 = texture(texture8, fragTexCoord);
 
-    
-    vec4 weightColour0 = texture(texture3, fragTexCoord);
-    vec4 weightColour1 = texture(texture4, fragTexCoord);
-    vec4 weightColour2 = texture(texture5, fragTexCoord);
+    // Normalize weights
+    vec4 totalWeight = weight1 + weight2 + weight3;
+    weight1 /= totalWeight;
+    weight2 /= totalWeight;
+    weight3 /= totalWeight;
 
-    // normalization ???
-    vec4 weightColourSum = weightColour0 + weightColour1 + weightColour2;
-    weightColour0 /=  weightColourSum;
-    weightColour1 /=  weightColourSum;
-    weightColour2 /=  weightColourSum;
+    // Blend textures based on weight maps
+    vec4 outColor = color1 * weight1 + color2 * weight2 + color3 * weight3;
 
-
-    vec4 texelColor0 = texture(texture0, fragTexCoord);
-    vec4 texelColor1 = texture(texture1, fragTexCoord);
-    vec4 texelColor2 = texture(texture2, fragTexCoord);
-    
-    //finalColor = texelColor0*weightColour0 + texelColor1*weightColour1 + texelColor2*weightColour2;
-    finalColor = weightColour0;
+    // Output final color
+    finalColor = outColor;
 }
