@@ -1,14 +1,5 @@
-find_package(raylib REQUIRED)
-find_package(glfw3 REQUIRED)
-find_package(glad REQUIRED)
-
-add_executable(ray "shader.cpp")
-add_executable(gla "learn_triangle.cpp")
-#add_executable(sample "triangle.cpp")
-add_executable(gpt "howto.cpp")
 
 
-target_link_libraries(ray PUBLIC raylib)
-target_link_libraries(gpt PUBLIC raylib)
-target_link_libraries(gla PUBLIC glfw)
-target_link_libraries(gla PUBLIC glad::glad)
+add_executable(ter "game/main.cpp" "game/rlFPCamera.cpp" "game/rlFPCamera.h" game/rlights.h)
+
+target_link_libraries(ter raylib)
