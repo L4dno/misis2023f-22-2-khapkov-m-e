@@ -8,10 +8,8 @@ in vec4 fragColor;
 uniform sampler2D texture0;
 uniform sampler2D texture1;
 uniform sampler2D texture2;
-
-uniform sampler2D weight0;
-uniform sampler2D weight1;
-uniform sampler2D weight2;
+//uniform sampler2D texture3;
+uniform sampler2D mask0;
 
 // Output fragment color
 out vec4 finalColor;
@@ -19,20 +17,18 @@ out vec4 finalColor;
 void main()
 {
     
-    vec4 weightColour0 = texture(weight0, fragTexCoord);
-    vec4 weightColour1 = texture(weight1, fragTexCoord);
-    vec4 weightColour2 = texture(weight2, fragTexCoord);
+    // Texel color fetching from texture sampler
+    vec4 mask = texture(mask0, fragTexCoord);
 
-    // normalization ???
-    //vec4 maskColourSum = maskColour0 + maskColour1 + maskColour2;
-    //maskColour0 /=  maskColourSum;
-    //maskColour1 /=  maskColourSum;
-    //maskColour2 /=  maskColourSum;
+    vec4 baseColor = texture(texture0, fragTexCoord);
+    vec4 layer1Color = texture(texture1, fragTexCoord);
+    vec4 texelColor = mix(layer1Color, baseColor, mask.r);
 
+    vec4 layer2Color = texture(texture2, fragTexCoord);
+    texelColor = mix(layer2Color, texelColor, mask.g);
 
-    vec4 texelColor0 = texture(texture0, fragTexCoord);
-    vec4 texelColor1 = texture(texture1, fragTexCoord);
-    vec4 texelColor2 = texture(texture2, fragTexCoord);
+    //vec4 layer3Color = texture(texture3, fragTexCoord);
+    //texelColor = mix(layer3Color, texelColor, mask.b);
     
-    finalColor = texelColor0*weightColour0 + texelColor1*weightColour1 + texelColor2*weightColour2;
+    finalColor = mask;
 }

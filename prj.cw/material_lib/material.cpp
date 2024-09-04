@@ -30,34 +30,34 @@ void Renderer::DrawSelf() {
         throw std::exception("cant compile a shader");
     }
 
-    /*model.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = textures[0];
-    model.materials[0].maps[MATERIAL_MAP_SPECULAR].texture = textures[1];
-    model.materials[0].maps[MATERIAL_MAP_NORMAL].texture = textures[2];*/
+    
 
-    // i have only images but i need textures
+    int texture1Loc = GetShaderLocation(shader, "texture1");
+    SetShaderValueTexture(shader, texture1Loc, textures[1]);
 
+    int texture2Loc = GetShaderLocation(shader, "texture2");
+    SetShaderValueTexture(shader, texture2Loc, textures[2]);
 
+    //int texture3Loc = GetShaderLocation(shader, "texture3");
+    //SetShaderValueTexture(shader, texture3Loc, texture3);
 
-    SetShaderValueTexture(shader, GetShaderLocation(shader, "texture3"), textures[0]);
-    SetShaderValueTexture(shader, GetShaderLocation(shader, "texture4"), textures[1]);
-    SetShaderValueTexture(shader, GetShaderLocation(shader, "texture5"), textures[2]);
-
-    SetShaderValueTexture(shader, GetShaderLocation(shader, "texture6"), masks[0]);
-    SetShaderValueTexture(shader, GetShaderLocation(shader, "texture7"), masks[1]);
-    SetShaderValueTexture(shader, GetShaderLocation(shader, "texture8"), masks[2]);
+    int maskLoc = GetShaderLocation(shader, "mask0");
+    SetShaderValueTexture(shader, maskLoc, mask);
 
     model.materials[0].shader = shader;
+    model.materials[0].maps[MATERIAL_MAP_ALBEDO].texture = textures[0];
 
     SetTargetFPS(60);
     while (!WindowShouldClose()) {
         UpdateCamera(&camera, CAMERA_FREE);
 
         BeginDrawing();
-        ClearBackground(RAYWHITE);
-        /*DrawTexture(masks[0], 0, 0, WHITE);
-        DrawTexture(masks[1], 250, 250, WHITE);
-        DrawTexture(masks[2], 512, 512, WHITE);*/
+        ClearBackground(SKYBLUE);
         BeginMode3D(camera);
+        SetShaderValueTexture(shader, texture1Loc, textures[1]);
+        SetShaderValueTexture(shader, texture2Loc, textures[2]);
+        //SetShaderValueTexture(shader, texture3Loc, texture3);
+        SetShaderValueTexture(shader, maskLoc, mask);
         DrawModel(model, position, 1.0f, WHITE);
         EndMode3D();
 
@@ -69,14 +69,14 @@ Renderer::Renderer() {
     InitWindow(kWindowWidth, kWindowHeight, "grid landscape");
     for (int i_text = 0; i_text < kNumOfTextureBinds; i_text++) {
         textures[i_text] = LoadTextureFromImage(GenImageColor(1, 1, BLANK));
-        masks[i_text] = LoadTextureFromImage(GenImageColor(1, 1, BLANK));
+        mask = LoadTextureFromImage(GenImageColor(1, 1, BLANK));
     }
 }
 Renderer::~Renderer() {
     UnloadShader(shader); // Unload shader
     for (int text_ind = 0; text_ind < kNumOfTextureBinds; ++text_ind) {
         UnloadTexture(textures[text_ind]);
-        UnloadTexture(masks[text_ind]);
+        UnloadTexture(mask);
     }
     UnloadModel(model);
     CloseWindow();
@@ -85,8 +85,8 @@ Renderer::~Renderer() {
 // load data from files and upload to vram
 void Renderer::SetMesh(std::string path) {
 
-    //model = LoadModel(path.c_str());
-    model = LoadModelFromMesh(GenMeshCube(1.0f, 1.0f, 1.0f));
+    model = LoadModel(path.c_str());
+    // model = LoadModelFromMesh(GenMeshCube(1.0f, 1.0f, 1.0f));
     if (model.meshCount != 1) {
         throw std::exception("cant load mesh file");
     }
@@ -105,12 +105,11 @@ void Renderer::SetTexture(int ind, std::string path) {
     }
 
     textures[ind] = LoadTextureFromImage(img);
-
+    GenTextureMipmaps(&textures[ind]);
+    SetTextureFilter(textures[ind], TEXTURE_FILTER_TRILINEAR);
 }
 
-void Renderer::SetMask(int ind, std::string path) {
-    if (ind < 0 || ind > 2)
-        throw std::exception("wrong texture index");
+void Renderer::SetMask(std::string path) {
 
     Image img = LoadImage(path.c_str());
     //ImageColorGrayscale(&img);
@@ -121,6 +120,6 @@ void Renderer::SetMask(int ind, std::string path) {
         throw std::exception("cant load a mask texture");
     }
 
-    masks[ind] = LoadTextureFromImage(img);
-
+    mask = LoadTextureFromImage(img);
+    SetTextureFilter(mask, TEXTURE_FILTER_BILINEAR);
 }

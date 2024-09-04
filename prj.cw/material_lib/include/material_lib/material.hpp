@@ -18,19 +18,12 @@ private:
     Shader shader = { 0 };
     
     // textures can be different in size
+    // texture0 is the base texture
     Texture2D textures[kNumOfTextureBinds];
     // invariant that masks sum are 1
     // also masks should have the same width and height
-    Texture2D masks[kNumOfTextureBinds];
+    Texture2D mask;
 
-    // image should have PIXELFORMAT_UNCOMPRESSED_GRAYSCALE format
-    //void ApplyGaussianBlur(Image& image, int radius, float sigma);
-
-    //void BlendMasks();
-
-    //bool isReadyToRender() const;
-
-    //void SetImageToShader(const std::string uniform_name, Shader& shader);
 public:
     // here we init context
     Renderer();
@@ -38,7 +31,7 @@ public:
     ~Renderer();
     void SetMesh(std::string path);
     void SetTexture(int ind, std::string path);
-    void SetMask(int ind, std::string path);
+    void SetMask(std::string path);
     void DrawSelf();
 };
 

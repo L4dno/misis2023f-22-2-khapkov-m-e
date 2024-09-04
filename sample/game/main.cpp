@@ -385,34 +385,36 @@ int main ()
 	sector.Setup();
 	//sector.SetupCellular();
 
-	Image img = LoadImage("../../../resources/terrain/terrain.png");
+	Image img = LoadImage("../sample/resources/terrain/terrain.png");
 	sector.SetupImage(img);
 	UnloadImage(img);
 
 	sector.ComputeNormals();
 
+	//Model tmp = LoadModel("../sample/resources/terrain/grid_mesh.obj");
+	//Mesh mesh = tmp.meshes[0];
 	Mesh mesh = { 0 };
 	sector.BuildMesh(mesh);
 
 	UploadMesh(&mesh, false);
 
-	Texture baseTexture = LoadTexture("../../../resources/terrain/dirt.png");
+	Texture baseTexture = LoadTexture("../sample/resources/terrain/dirt.png");
 	GenTextureMipmaps(&baseTexture);
 	SetTextureFilter(baseTexture, TEXTURE_FILTER_TRILINEAR);
 
-	Texture texture1 = LoadTexture("../../../resources/terrain/grass.png");
+	Texture texture1 = LoadTexture("../sample/resources/terrain/grass.png");
     GenTextureMipmaps(&texture1);
     SetTextureFilter(texture1, TEXTURE_FILTER_TRILINEAR);
 
-    Texture texture2 = LoadTexture("../../../resources/terrain/mud.png");
+    Texture texture2 = LoadTexture("../sample/resources/terrain/mud.png");
     GenTextureMipmaps(&texture2);
     SetTextureFilter(texture2, TEXTURE_FILTER_TRILINEAR);
 
-    Texture texture3 = LoadTexture("../../../resources/terrain/lava.png");
+    Texture texture3 = LoadTexture("../sample/resources/terrain/sand.png");
     GenTextureMipmaps(&texture3);
     SetTextureFilter(texture3, TEXTURE_FILTER_TRILINEAR);
 
-    Texture maskTexture = LoadTexture("../../../resources/terrain/mask.png");
+    Texture maskTexture = LoadTexture("../sample/resources/terrain/mask.png");
 	SetTextureFilter(maskTexture, TEXTURE_FILTER_BILINEAR);
  
 	rlFPCamera viewCamera;
@@ -428,7 +430,7 @@ int main ()
 	wireMat.maps[MATERIAL_MAP_ALBEDO].color = BLACK;
 
     // load basic lighting
-    Shader lightShader = LoadShader("../../../resources/shaders/base_lighting.vs", "../../../resources/shaders/lighting.fs");
+    Shader lightShader = LoadShader("../sample/resources/shaders/base_lighting.vs", "../sample/resources/shaders/lighting.fs");
 	lightShader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(lightShader, "viewPos");
 
     int ambientLoc = GetShaderLocation(lightShader, "ambient");
@@ -472,6 +474,7 @@ int main ()
 
 		// drawing
 		BeginDrawing();
+		DrawTexture(maskTexture, 0, 0, WHITE);
 		ClearBackground(SKYBLUE);
 
 		//BeginMode3D(viewCamera.GetCamera());
