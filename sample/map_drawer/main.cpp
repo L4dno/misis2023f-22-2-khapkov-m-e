@@ -11,12 +11,13 @@ void DrawHexagon(Vector2 center, float size, Color color) {
         DrawCircle(points[i].x, points[i].y, 5, YELLOW);
     }
     // maybe way of rotation is incorrect
-    DrawTriangleFan(points, 6, color);
+    //DrawTriangleFan(points, 6, color);
+    DrawPolyLines(center, 6, size, 30, BLACK);
 }
 
 int main() {
-    const int screenWidth = 1080;
-    const int screenHeight = 720;
+    const int screenWidth = 1024;
+    const int screenHeight = 1024;
 
     InitWindow(screenWidth, screenHeight, "Honeycomb Pattern Export");
 
@@ -30,13 +31,13 @@ int main() {
     // Draw a honeycomb pattern
     // it can draw
     // but specific pattern doesnt show
-    int hexSize = 50;
+    int hexSize = 30;
     int hexSpacing = 10;
     for (int y = 0; y < screenHeight; y += hexSize + hexSpacing) {
         for (int x = 0; x < screenWidth; x += hexSize * 1.5f + hexSpacing) {
             // centers are suited good
             Vector2 center = { x + hexSize / 2.0f, y + hexSize / 2.0f };
-            DrawHexagon(center, hexSize, PURPLE);
+            DrawHexagon(center, hexSize, BLACK);
             //DrawCircle(center.x, center.y, 5, YELLOW);
         }
     }
@@ -55,12 +56,12 @@ int main() {
         BeginDrawing();
         ClearBackground(RAYWHITE);
         // рисование идет, но на текстуре, видимо, ничего нет
-        DrawRectangle(0, 0, 400, 200, RED);
+        //DrawRectangle(0, 0, 400, 200, RED);
         DrawTextureRec(target.texture, Rectangle {
             0, 0, (float)target.texture.width,
                 (float)-target.texture.height
         }, Vector2 { 0, 0 }, WHITE);
-        DrawRectangle(0, 0, 200, 400, BLUE);
+        //DrawRectangle(0, 0, 200, 400, BLUE);
         EndDrawing();
     }
 

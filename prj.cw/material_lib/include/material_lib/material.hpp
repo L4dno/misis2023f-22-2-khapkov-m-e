@@ -1,4 +1,4 @@
-#ifndef MATERIAL_11012024
+﻿#ifndef MATERIAL_11012024
 #define MATERIAL_11012024
 
 #include <raylib.h>
@@ -8,6 +8,9 @@
 
 #define GLSL_VERSION 330
 
+// класс, создаваемый пользователем
+// хранит загруженные свойства модели (текстуры, меши)
+// отрисовывает модель с нужными параметрами
 class Renderer {
 private:
     static const int kWindowHeight = 1080;

@@ -1,12 +1,3 @@
-/*
-Raylib example file.
-This is an example main file for a simple raylib project.
-Use this as a starting point or replace it with your code.
-
-For a C++ project simply rename the file to .cpp and run premake 
-
-*/
-
 #include "raylib.h"
 #include "raymath.h"
 #include "rlgl.h"
@@ -19,7 +10,6 @@ For a C++ project simply rename the file to .cpp and run premake
 #include "rlights.h"
 
 // a simple class to help build up faces of a cube
-// can be made to be pure C and take the global data in a structure or global data
 class GeomtryBuilder
 {
 public:
@@ -391,10 +381,10 @@ int main ()
 
 	sector.ComputeNormals();
 
-	//Model tmp = LoadModel("../sample/resources/terrain/grid_mesh.obj");
-	//Mesh mesh = tmp.meshes[0];
-	Mesh mesh = { 0 };
-	sector.BuildMesh(mesh);
+	Model tmp = LoadModel("../sample/resources/terrain/grid_mesh.obj");
+	Mesh mesh = tmp.meshes[0];
+	//Mesh mesh = { 0 };
+	//sector.BuildMesh(mesh);
 
 	UploadMesh(&mesh, false);
 
