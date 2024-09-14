@@ -375,20 +375,33 @@ int main ()
 	sector.Setup();
 	//sector.SetupCellular();
 
-	Image img = LoadImage("../sample/resources/terrain/terrain.png");
+	// here we can change Image for Terraing gen
+	// --------------------------------------------------------------------
+
+	//Image img = LoadImage("../sample/resources/terrain/terrain.png");
+	Image img = LoadImage("../sample/map_drawer/painting.png");
 	sector.SetupImage(img);
 	UnloadImage(img);
 
+	//---------------------------------------------------------------------
+
+
 	sector.ComputeNormals();
 
-	Model tmp = LoadModel("../sample/resources/terrain/grid_mesh.obj");
-	Mesh mesh = tmp.meshes[0];
-	//Mesh mesh = { 0 };
-	//sector.BuildMesh(mesh);
+	// here we change mesh for drawing
+	//------------------------------------------------------------------
+	
+	/*Model tmp = LoadModel("../sample/resources/terrain/grid_mesh.obj");
+	Mesh mesh = tmp.meshes[0];*/
+
+	Mesh mesh = { 0 };
+	sector.BuildMesh(mesh);
+	// 
+	//------------------------------------------------------------------
 
 	UploadMesh(&mesh, false);
 
-	Texture baseTexture = LoadTexture("../sample/resources/terrain/dirt.png");
+	Texture baseTexture = LoadTexture("../sample/resources/terrain/sand.png");
 	GenTextureMipmaps(&baseTexture);
 	SetTextureFilter(baseTexture, TEXTURE_FILTER_TRILINEAR);
 
@@ -400,7 +413,7 @@ int main ()
     GenTextureMipmaps(&texture2);
     SetTextureFilter(texture2, TEXTURE_FILTER_TRILINEAR);
 
-    Texture texture3 = LoadTexture("../sample/resources/terrain/sand.png");
+    Texture texture3 = LoadTexture("../sample/resources/terrain/dirt.png");
     GenTextureMipmaps(&texture3);
     SetTextureFilter(texture3, TEXTURE_FILTER_TRILINEAR);
 
@@ -478,7 +491,7 @@ int main ()
 		SetShaderValueTexture(lightShader, texture2Loc, texture2);
 		SetShaderValueTexture(lightShader, texture3Loc, texture3);
         SetShaderValueTexture(lightShader, maskLoc, maskTexture);
-
+		
 		float angle = float(GetTime()) * 0.025f;
 		//rlRotatef(angle * RAD2DEG, 0, 0, 1);
 		DrawMesh(mesh, mat, MatrixIdentity());
