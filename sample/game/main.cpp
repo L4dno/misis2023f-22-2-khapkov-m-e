@@ -8,10 +8,6 @@
 // used in BuildMesh to manage work with weight=0
 #define ERASE_LOW_POINTS 1
 
-// lighting
-#define RLIGHTS_IMPLEMENTATION
-#include "rlights.h"
-
 // a simple class to help build up faces of a cube
 class GeomtryBuilder
 {
@@ -457,9 +453,6 @@ int main ()
     int maskLoc = GetShaderLocation(lightShader, "mask0");
     SetShaderValueTexture(lightShader, maskLoc, maskTexture);
 
-    Light lights[MAX_LIGHTS] = { 0 };
-    lights[0] = CreateLight(LIGHT_DIRECTIONAL, Vector3Zero(), Vector3{ -20, -40, -30 }, WHITE, lightShader);
-
 	mat.shader = lightShader;
 	mat.maps[MATERIAL_MAP_ALBEDO].texture = baseTexture;
 
@@ -474,9 +467,7 @@ int main ()
 		viewCamera.UseMouseX = viewCamera.UseMouseY = IsMouseButtonDown(MOUSE_BUTTON_RIGHT);
 		viewCamera.Update();
 
-        // update lights
-        UpdateLightValues(lightShader, lights[0]);
-
+        
         // Update the shader with the camera view vector (points towards { 0.0f, 0.0f, 0.0f })
         SetShaderValue(lightShader, lightShader.locs[SHADER_LOC_VECTOR_VIEW], &viewCamera.GetCameraPosition(), SHADER_UNIFORM_VEC3);
 

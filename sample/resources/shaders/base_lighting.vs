@@ -19,8 +19,6 @@ out vec2 fragTexCoord2;
 out vec4 fragColor;
 out vec3 fragNormal;
 
-// NOTE: Add here your custom variables
-
 void main()
 {
     // Send vertex attributes to fragment shader
