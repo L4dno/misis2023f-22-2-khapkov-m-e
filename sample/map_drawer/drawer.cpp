@@ -60,14 +60,14 @@ int main() {
 
     // Begin drawing to the texture
     BeginTextureMode(target);
-    ClearBackground(BLANK);
+    ClearBackground(WHITE);
 
     // all changes in algo only between such lines
     //-------------------------------------------------------------------
 
     int numRows = 5;
     int numCols = 7;
-    float hexSize = 30.0; // Adjust the size of the hexes
+    float hexSize = 60.0; // Adjust the size of the hexes
 
     Grid hexGrid = 
             CalculateHexGridPositions(numRows, numCols, hexSize);
@@ -99,8 +99,8 @@ int main() {
 
     // Export the texture as a PNG file
     Image image = LoadImageFromTexture(target.texture);
-    //ImageFlipVertical(&image);
-    //ImageBlurGaussian(&image, 10);
+    ImageFlipVertical(&image);
+    ImageBlurGaussian(&image, 5);
     //ImageColorGrayscale(&image);
     ExportImage(image, "../sample/map_drawer/painting.png");
     UnloadImage(image);

@@ -382,8 +382,8 @@ int main ()
 	// here we can change Image for Terraing gen
 	// --------------------------------------------------------------------
 
-	//Image img = LoadImage("../sample/resources/terrain/terrain.png");
-	Image img = LoadImage("../sample/map_drawer/painting.png");
+	Image img = LoadImage("../sample/resources/terrain/terrain.png");
+	//Image img = LoadImage("../sample/map_drawer/painting.png");
 	sector.SetupImage(img);
 	//UnloadImage(img);
 
@@ -405,7 +405,7 @@ int main ()
 
 	UploadMesh(&mesh, false);
 
-	Texture baseTexture = LoadTexture("../sample/resources/terrain/sand.png");
+	Texture baseTexture = LoadTexture("../sample/resources/terrain/dirt.png");
 	GenTextureMipmaps(&baseTexture);
 	SetTextureFilter(baseTexture, TEXTURE_FILTER_TRILINEAR);
 
@@ -413,15 +413,16 @@ int main ()
     GenTextureMipmaps(&texture1);
     SetTextureFilter(texture1, TEXTURE_FILTER_TRILINEAR);
 
-    Texture texture2 = LoadTexture("../sample/resources/terrain/mud.png");
+    Texture texture2 = LoadTexture("../sample/resources/terrain/sand.png");
     GenTextureMipmaps(&texture2);
     SetTextureFilter(texture2, TEXTURE_FILTER_TRILINEAR);
 
-    Texture texture3 = LoadTexture("../sample/resources/terrain/dirt.png");
+    Texture texture3 = LoadTexture("../sample/resources/terrain/mud.png");
     GenTextureMipmaps(&texture3);
     SetTextureFilter(texture3, TEXTURE_FILTER_TRILINEAR);
 
-    Texture maskTexture = LoadTexture("../sample/resources/terrain/mask.png");
+    //Texture maskTexture = LoadTexture("../sample/resources/terrain/mask.png");
+    Texture maskTexture = LoadTexture("../sample/map_drawer/painting.png");
 	SetTextureFilter(maskTexture, TEXTURE_FILTER_BILINEAR);
  
 	rlFPCamera viewCamera;
