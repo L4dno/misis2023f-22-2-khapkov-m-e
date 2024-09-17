@@ -40,8 +40,8 @@ public:
         MeshRef.indices = nullptr;
     }
 
-    inline void SetNormal(Vector3& value) { Normal = value; }
-    inline void SetNormal(float x, float y, float z) { Normal = Vector3{ x,y,z }; }
+    //inline void SetNormal(Vector3& value) { Normal = value; }
+    //inline void SetNormal(float x, float y, float z) { Normal = Vector3{ x,y,z }; }
     inline void SetSetUV(Vector2& value) { UV = value; }
     inline void SetSetUV(float x, float y) { UV = Vector2{ x,y }; }
 	inline void SetSetUV2(float x, float y) { UV2 = Vector2{ x,y }; }
@@ -70,14 +70,6 @@ public:
             index = TriangleIndex * 6 + VertIndex * 2;
             MeshRef.texcoords2[index] = UV2.x;
             MeshRef.texcoords2[index + 1] = UV2.y;
-        }
-
-        if (MeshRef.normals != nullptr)
-        {
-            index = TriangleIndex * 9 + VertIndex * 3;
-            MeshRef.normals[index] = Normal.x;
-            MeshRef.normals[index + 1] = Normal.y;
-            MeshRef.normals[index + 2] = Normal.z;
         }
 
         index = TriangleIndex * 9 + VertIndex * 3;
@@ -133,24 +125,6 @@ public:
 		}
 	}
 
-	void SetupCellular()
-	{
-		Image img = GenImageCellular(width, height, width/20);
-
-        for (uint16_t v = 0; v < height; v++)
-        {
-            for (uint16_t h = 0; h < width; h++)
-            {
-				float param = GetImageColor(img, h, v).r / 255.0f;
-
-				param *= 10; // scale;
-
-				SetHeightmapValue(h, v, param);
-            }
-        }
-		UnloadImage(img);
-	}
-
     void SetupImage(Image &img)
     {
 		ImageResize(&img, width, height);
@@ -164,19 +138,6 @@ public:
                 param *= 35; // scale;
 
                 SetHeightmapValue(h, v, param);
-            }
-        }
-    }
-
-    void DebugDraw()
-    {
-        for (uint16_t v = 0; v < height; v++)
-        {
-            for (uint16_t h = 0; h < width; h++)
-            {
-				Vector3 pos = { float(h), float(v), GetHeightmapValue(h,v) };
-				Vector3 normalEp = Vector3Add(pos, GetNormalVector(h, v));
-				DrawLine3D(pos, normalEp, ColorAlpha(RED, 0.95f));
             }
         }
     }
@@ -260,30 +221,6 @@ public:
 		return tempNormals;
 	}
 
-	void ComputeNormals()
-	{
-        for (uint16_t v = 0; v < height; v++)
-        {
-            for (uint16_t h = 0; h < width; h++)
-            {
-				std::vector<Vector3> tempNormals = GetSiblingNormals(h,v);
-
-				Vector3 totalNormal = { 0,0,0 };
-				for (const auto& norm : tempNormals)
-				{
-					totalNormal = Vector3Add(norm, totalNormal);
-				}
-
-				if (normals.size() > 0)
-					totalNormal = Vector3Scale(totalNormal, 1.0f / tempNormals.size());
-				else
-					totalNormal = Vector3{ 0,1,0 };
-
-				normals[GetIndex(h, v)] = totalNormal;
-            }
-        }
-	}
-
 	void BuildMesh(Mesh& mesh)
 	{
 		GeomtryBuilder builder(mesh);
@@ -296,30 +233,20 @@ public:
 		{
 			for (uint16_t h = 0; h < width - 1; h++)
 			{
-				/*
-                    	B	C
-						
-						P	A
-
-						PAC
-						PCB
-                */
 
 				auto setVert = [&builder, this](uint16_t _h, uint16_t _v)
 				{
-                    builder.SetNormal(GetNormalVector(_h, _v));
+                    //builder.SetNormal(GetNormalVector(_h, _v));
                     builder.SetSetUV((_h / float(width)) * textureSize, (_v / float(height))* textureSize);
 					builder.SetSetUV2((_h / float(width)), (_v / float(height)));
                     if(!ERASE_LOW_POINTS || GetHeightmapValue(_h,_v)!=0)
 						builder.PushVertex(Vector3{ float(_h),float(_v), GetHeightmapValue(_h,_v) });
 				};
 
-				//PAC
 				setVert(h, v);
 				setVert(h+1, v);
 				setVert(h+1, v+1);
 
-                //PCB
                 setVert(h, v);
                 setVert(h + 1, v+1);
                 setVert(h, v + 1);
@@ -329,51 +256,14 @@ public:
 	}
 };
 
-/*
-		B
-	A	P	C
-		D
-
-*/
-
-Vector3 NormalTest()
-{
-	Vector3 P = { 0,0,0 };
-
-	Vector3 A = { -1, 0, 1 };
-	Vector3 B = { 0, 1, 0 };
-	Vector3 C = { 1, 0, 0 };
-	Vector3 D = { 0, -1, 0 };
-
-    Vector3 PA = Vector3Normalize(Vector3Subtract(A, P));
-    Vector3 PB = Vector3Normalize(Vector3Subtract(B, P));
-    Vector3 PC = Vector3Normalize(Vector3Subtract(C, P));
-    Vector3 PD = Vector3Normalize(Vector3Subtract(D, P));
-
-	Vector3 PABNormal = Vector3CrossProduct(PB, PA);
-	Vector3 PBCNormal = Vector3CrossProduct(PC, PB);
-    Vector3 PCDNormal = Vector3CrossProduct(PD, PC);
-    Vector3 PDANormal = Vector3CrossProduct(PA, PD);
-
-    Vector3 totalNormal = { 0 };
-    totalNormal.x = (PABNormal.x + PBCNormal.x + PCDNormal.x + PDANormal.x) / 4.0f;
-	totalNormal.y = (PABNormal.y + PBCNormal.y + PCDNormal.y + PDANormal.y) / 4.0f;
-	totalNormal.z = (PABNormal.z + PBCNormal.z + PCDNormal.z + PDANormal.z) / 4.0f;
-
-	return totalNormal;
-}
 
 int main ()
 {
-	//SetConfigFlags(FLAG_VSYNC_HINT);
-	// set up the window
 	InitWindow(1280, 800, "Hello Raylib");
 
-//	SetTargetFPS(144);
 
 	TerrainSector sector;
 	sector.Setup();
-	//sector.SetupCellular();
 
 	// here we can change Image for Terraing gen
 	// --------------------------------------------------------------------
@@ -381,12 +271,9 @@ int main ()
 	Image img = LoadImage("../sample/resources/terrain/terrain.png");
 	//Image img = LoadImage("../sample/map_drawer/painting.png");
 	sector.SetupImage(img);
-	//UnloadImage(img);
+	
 
 	//---------------------------------------------------------------------
-
-
-	sector.ComputeNormals();
 
 	// here we change mesh for drawing
 	//------------------------------------------------------------------
@@ -435,11 +322,10 @@ int main ()
 
     // load basic lighting
     Shader lightShader = LoadShader("../sample/resources/shaders/base_lighting.vs", "../sample/resources/shaders/lighting.fs");
+   
 	lightShader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(lightShader, "viewPos");
 
-    int ambientLoc = GetShaderLocation(lightShader, "ambient");
-    float val[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
-    SetShaderValue(lightShader, ambientLoc, val, SHADER_UNIFORM_VEC4);
+
 
 	int texture1Loc = GetShaderLocation(lightShader, "texture1");
 	SetShaderValueTexture(lightShader, texture1Loc, texture1);
@@ -456,14 +342,10 @@ int main ()
 	mat.shader = lightShader;
 	mat.maps[MATERIAL_MAP_ALBEDO].texture = baseTexture;
 
-	bool debugDraw = false;
 	
 	// game loop
 	while (!WindowShouldClose())
 	{
-		if (IsKeyPressed(KEY_F))
-			debugDraw = !debugDraw;
-
 		viewCamera.UseMouseX = viewCamera.UseMouseY = IsMouseButtonDown(MOUSE_BUTTON_RIGHT);
 		viewCamera.Update();
 
@@ -482,8 +364,6 @@ int main ()
 		//BeginMode3D(viewCamera.GetCamera());
 		viewCamera.BeginMode3D();
 
-		DrawCube(Vector3Zero(), 1, 1, 1, RED);
-
 		rlPushMatrix();
 
         SetShaderValueTexture(lightShader, texture1Loc, texture1);
@@ -491,32 +371,21 @@ int main ()
 		SetShaderValueTexture(lightShader, texture3Loc, texture3);
         SetShaderValueTexture(lightShader, maskLoc, maskTexture);
 		
-		float angle = float(GetTime()) * 0.025f;
-		//rlRotatef(angle * RAD2DEG, 0, 0, 1);
 		DrawMesh(mesh, mat, MatrixIdentity());
 
-		if (debugDraw)
-		{
-			rlDrawRenderBatchActive();
-			rlEnableWireMode();
-			DrawMesh(mesh, wireMat, MatrixTranslate(0,0,0.01f));
-			rlDrawRenderBatchActive();
-			rlDisableWireMode();
-
-			sector.DebugDraw();
-		}
+		
 		rlPopMatrix();
 
 		EndMode3D();
 
 		DrawFPS(0, 0);
-		DrawText(debugDraw ? "Debug On (F)" : "Debug Off (F)", 10, 20, 20, YELLOW);
 
 		DrawText(TextFormat("x%0.2f y%0.2f z%0.2f", viewCamera.GetCamera().position.y, viewCamera.GetCamera().position.x, viewCamera.GetCamera().position.z), 10, 40, 20, WHITE);
 		
 		EndDrawing();
 	}
 
+    UnloadImage(img);
 	// cleanup
 	CloseWindow();
 	return 0;
