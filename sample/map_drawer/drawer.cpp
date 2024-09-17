@@ -8,7 +8,7 @@
 using Grid = std::vector<std::vector<Vector3>>;
 // Function to calculate the positions of hexes in a 2D hexagonal grid
 Grid CalculateHexGridPositions(int numRows, int numCols, double hexSize) {
-    std::vector<std::vector<Vector2>> gridPositions(numRows, std::vector<Vector2>(numCols));
+    Grid gridPositions(numRows, std::vector<Vector3>(numCols));
 
     // Hexagon width and height (pointy-topped orientation)
     float hexWidth = 2 * hexSize;
@@ -26,7 +26,7 @@ Grid CalculateHexGridPositions(int numRows, int numCols, double hexSize) {
             // Y coordinate shifts by hexHeight
             float y = row * hexHeight + (col % 2 == 1 ? hexHeight / 2 : 0) + yOffset; // Offset for every other column
 
-            gridPositions[row][col] = Vector2{ x, y };
+            gridPositions[row][col] = Vector3{ x, y };
         }
     }
 
@@ -71,11 +71,20 @@ int main() {
 
     Grid hexGrid = 
             CalculateHexGridPositions(numRows, numCols, hexSize);
-
+    ColorizeTextMap(hexGrid);
 
     for (auto row: hexGrid) {
         for (auto center : row) {
-            DrawPoly({ center.x,center.y }, 6, hexSize, 0, WHITE);
+            Color tmp;
+            switch (int(center.z)) {
+            case 0: 
+                throw std::exception("when drawing hexes on text colors are unitialized");
+                break;
+            case 1: tmp = RED; break;
+            case 2: tmp = BLUE; break;
+            case 3: tmp = GREEN; break;
+            }
+            DrawPoly({ center.x,center.y }, 6, hexSize, 0, tmp);
         }
     }
 
