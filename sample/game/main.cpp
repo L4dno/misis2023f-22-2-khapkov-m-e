@@ -5,6 +5,9 @@
 
 #include <vector>
 
+// used in BuildMesh to manage work with weight=0
+#define ERASE_LOW_POINTS 1
+
 // lighting
 #define RLIGHTS_IMPLEMENTATION
 #include "rlights.h"
@@ -311,7 +314,8 @@ public:
                     builder.SetNormal(GetNormalVector(_h, _v));
                     builder.SetSetUV((_h / float(width)) * textureSize, (_v / float(height))* textureSize);
 					builder.SetSetUV2((_h / float(width)), (_v / float(height)));
-                    builder.PushVertex(Vector3{ float(_h),float(_v), GetHeightmapValue(_h,_v) });
+                    if(!ERASE_LOW_POINTS || GetHeightmapValue(_h,_v)!=0)
+						builder.PushVertex(Vector3{ float(_h),float(_v), GetHeightmapValue(_h,_v) });
 				};
 
 				//PAC
@@ -381,7 +385,7 @@ int main ()
 	//Image img = LoadImage("../sample/resources/terrain/terrain.png");
 	Image img = LoadImage("../sample/map_drawer/painting.png");
 	sector.SetupImage(img);
-	UnloadImage(img);
+	//UnloadImage(img);
 
 	//---------------------------------------------------------------------
 
@@ -477,7 +481,10 @@ int main ()
 
 		// drawing
 		BeginDrawing();
-		DrawTexture(maskTexture, 0, 0, WHITE);
+		// this may be not useful
+		//DrawTexture(maskTexture, 0, 0, WHITE);
+		Texture2D uploaded_img = LoadTextureFromImage(img);
+		DrawTexture(uploaded_img, 0, 0, WHITE);
 		ClearBackground(SKYBLUE);
 
 		//BeginMode3D(viewCamera.GetCamera());
