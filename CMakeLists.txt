@@ -16,5 +16,5 @@ project(khapkov-m-e-22-2)
 
 add_subdirectory(prj.cw)
 add_subdirectory(prj.codeforces)
-#add_subdirectory(tests)
+#add_subdirectory(prj.test)
 
