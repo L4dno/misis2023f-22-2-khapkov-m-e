@@ -103,7 +103,7 @@ int main() {
     ImageBlurGaussian(&image, 5);
     //ImageColorGrayscale(&image);
     //  exe in bin/Debug  png needs to be in prj.cw/resources
-    ExportImage(image, "../../prj.cw/resources");
+    //ExportImage(image, "../../prj.cw/resources");
     UnloadImage(image);
 
 
