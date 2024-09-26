@@ -102,7 +102,8 @@ int main() {
     ImageFlipVertical(&image);
     ImageBlurGaussian(&image, 5);
     //ImageColorGrayscale(&image);
-    ExportImage(image, "../sample/map_drawer/painting.png");
+    //  exe in bin/Debug  png needs to be in prj.cw/resources
+    ExportImage(image, "../../prj.cw/resources");
     UnloadImage(image);
 
 
