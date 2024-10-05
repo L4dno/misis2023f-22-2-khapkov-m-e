@@ -1,11 +1,11 @@
 find_package(raylib REQUIRED)
 find_package(Doxygen REQUIRED)
 
-#add_executable(test_app "main.cpp")
+add_executable(test_app "main.cpp")
 
-#add_subdirectory("material_lib")
+add_subdirectory("material_lib")
 add_subdirectory("map_drawer")
-#target_link_libraries(test_app PUBLIC material_lib raylib)
+target_link_libraries(test_app PUBLIC material_lib raylib)
 
 set(DOXYGEN_RECURSIVE YES)
 set(DOXYGEN_EXCLUDE_PATTERNS "*/_deps/*")
@@ -27,6 +27,6 @@ add_custom_target(doc_doxygen ALL
     VERBATIM
 )
 
-#install(TARGETS test_app DESTINATION bin)
+install(TARGETS test_app DESTINATION bin)
 install(DIRECTORY resources DESTINATION .)
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/rtf DESTINATION .)

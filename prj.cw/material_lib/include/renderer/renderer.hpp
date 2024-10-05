@@ -1,28 +1,38 @@
 #ifndef MATERIAL_11012024
 #define MATERIAL_11012024
 
+
 #include <raylib.h>
 
 #include <string>
-#include <vector>
+
+#define GLSL_VERSION            330
+
 
 class Renderer {
 private:
-    Model model = { 0 };
+    Mesh mesh = { 0 };
     const int kWindowHeight = 1080;
     const int kWindowWidth = 1920;
+    static const int kNumOfTextBinds = 4; // 0 is a base texture
 
-    std::string GetObjName(const std::string path, int mesh_ind);
+    // textures can be different in size
+    // texture0 is the base texture
+    Texture2D textures[kNumOfTextBinds];
+    // invariant that masks sum are 1
+    // also masks should have the same width and height
+    Texture2D mask;
 
 public:
     // here we init context
     Renderer();
     // and here we close
     ~Renderer();
-    void LoadMeshData(std::string path, int count);
-    void LoadTexturesData(std::vector<std::string> file_names);
-    void LoadHexToMaterialMap(std::vector<int> hex_mat);
+
+    void SetTextureI(int, const std::string&);
+    void SetMask(const std::string&);
     void DrawSelf();
 };
+
 
 #endif
