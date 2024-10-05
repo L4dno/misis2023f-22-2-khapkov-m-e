@@ -1,5 +1,5 @@
-﻿#include "include/renderer/renderer.hpp"
-#include "include/camera/rlFPCamera.hpp"
+﻿#include "renderer.hpp"
+#include "rlFPCamera.hpp"
 
 #include <raymath.h>
 #include <rlgl.h>

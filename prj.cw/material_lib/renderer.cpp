@@ -1,5 +1,5 @@
 ﻿#include "include/renderer/renderer.hpp"
-#include "include/camera/rlFPCamera.hpp"
+#include "include/camera/rlFPCamera.h"
 
 #include <raymath.h>
 #include <rlgl.h>
@@ -49,7 +49,7 @@ public:
     inline void SetSetUV(float x, float y) { UV = Vector2{ x,y }; }
     inline void SetSetUV2(float x, float y) { UV2 = Vector2{ x,y }; }
 
-    inline void PushVertex(Vector3& vertex, float xOffset = 0, float yOffset = 0, float zOffset = 0)
+    inline void PushVertex(Vector3 vertex, float xOffset = 0, float yOffset = 0, float zOffset = 0)
     {
         size_t index = TriangleIndex * 12 + VertIndex * 3;
 
@@ -322,9 +322,9 @@ void Renderer::DrawSelf() {
         viewCamera.UseMouseX = viewCamera.UseMouseY = IsMouseButtonDown(MOUSE_BUTTON_RIGHT);
         viewCamera.Update();
 
-
+        Vector3 tmp = viewCamera.GetCameraPosition();
         // Update the shader with the camera view vector (points towards { 0.0f, 0.0f, 0.0f })
-        SetShaderValue(lightShader, lightShader.locs[SHADER_LOC_VECTOR_VIEW], &viewCamera.GetCameraPosition(), SHADER_UNIFORM_VEC3);
+        SetShaderValue(lightShader, lightShader.locs[SHADER_LOC_VECTOR_VIEW], &tmp, SHADER_UNIFORM_VEC3);
 
         // drawing
         BeginDrawing();

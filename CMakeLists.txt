@@ -14,7 +14,7 @@ set (CMAKE_RUNTIME_OUTPUT_RELWITHDEBINFO ${CMAKE_CURRENT_SOURCE_DIR}/bin.relwith
 
 project(khapkov-m-e-22-2)
 
-#add_subdirectory(prj.cw)
+add_subdirectory(prj.cw)
 add_subdirectory(prj.codeforces)
-add_subdirectory(prj.test)
+#add_subdirectory(prj.test)
 

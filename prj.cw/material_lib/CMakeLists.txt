@@ -1,5 +1,5 @@
 add_library(material_lib renderer.cpp rlFPCamera.cpp /
-			include/camera/rlFPCamera.hpp include/renderer/renderer.hpp)
+			include/camera/rlFPCamera.h include/renderer/renderer.hpp)
 set_property(TARGET material_lib PROPERTY CXX_STANDARD 20)
 
 target_include_directories(material_lib PUBLIC

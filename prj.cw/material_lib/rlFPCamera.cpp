@@ -28,11 +28,11 @@
 *
 **********************************************************************************************/
 
-#include "rlFPCamera.hpp"
+#include "include/camera/rlFPCamera.h"
 
-#include "raylib.h"
-#include "rlgl.h"
-#include "raymath.h"
+#include <raylib.h>
+#include <rlgl.h>
+#include <raymath.h>
 
 #include <cmath>
 
