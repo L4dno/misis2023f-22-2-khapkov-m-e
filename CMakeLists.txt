@@ -18,6 +18,6 @@ find_package(raylib CONFIG REQUIRED)
 find_package(doctest CONFIG REQUIRED)
 find_package(Doxygen REQUIRED)
 
-add_subdirectory(prj.cw)
+#add_subdirectory(prj.cw)
 add_subdirectory(prj.codeforces)
-#add_subdirectory(prj.test)
+add_subdirectory(prj.test)

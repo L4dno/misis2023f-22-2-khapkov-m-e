@@ -1,16 +1,9 @@
-find_package(Doxygen)
-find_package(raylib)
 
-add_library(render renderer.cpp renderer.hpp /
+add_executable (main main.cpp renderer.cpp renderer.hpp /
 					rlFPCamera.cpp rlFPCamera.hpp)
-
-target_link_libraries(render PRIVATE raylib)
-
-add_executable (main main.cpp)
 
 
 target_link_libraries(main PRIVATE raylib)
-target_link_libraries(main PRIVATE render)
 
 
 set(DOXYGEN_RECURSIVE YES)

@@ -265,7 +265,7 @@ Renderer::Renderer() {
     TerrainSector sector;
     sector.Setup();
 
-    Image img = LoadImage("../sample/resources/terrain/terrain.png");
+    Image img = LoadImage("../../prj.test/resources/terrain.png");
     sector.SetupImage(img);
     UnloadImage(img);
     // cleanup
@@ -294,7 +294,8 @@ void Renderer::DrawSelf() {
     wireMat.maps[MATERIAL_MAP_ALBEDO].color = BLACK;
 
     // load basic lighting
-    Shader lightShader = LoadShader("../sample/resources/shaders/base_lighting.vs", "../sample/resources/shaders/lighting.fs");
+    Shader lightShader = LoadShaderFromMemory(vertex,fragment);
+    //Shader lightShader = LoadShader("", "");
     lightShader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(lightShader, "viewPos");
 
 
