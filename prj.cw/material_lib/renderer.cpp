@@ -5,6 +5,7 @@
 #include <rlgl.h>
 
 #include <string>
+#include <iostream>
 #include <sstream>
 #include <exception>
 #include <vector>
@@ -265,7 +266,7 @@ Renderer::Renderer() {
     TerrainSector sector;
     sector.Setup();
 
-    Image img = LoadImage("../sample/resources/terrain/terrain.png");
+    Image img = LoadImage("../resources/terrain.png");
     sector.SetupImage(img);
     UnloadImage(img);
     // cleanup
@@ -294,7 +295,11 @@ void Renderer::DrawSelf() {
     wireMat.maps[MATERIAL_MAP_ALBEDO].color = BLACK;
 
     // load basic lighting
-    Shader lightShader = LoadShader("../sample/resources/shaders/base_lighting.vs", "../sample/resources/shaders/lighting.fs");
+    
+    Shader lightShader = LoadShader("../resources/base_lighting.vs", "../resources/lighting.fs");
+    if (IsShaderReady(lightShader)) {
+        std::cout << "\nSHADER IS READY\n";
+    }
     lightShader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(lightShader, "viewPos");
 
 
