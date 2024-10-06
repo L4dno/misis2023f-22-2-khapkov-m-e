@@ -1,11 +1,10 @@
-find_package(raylib REQUIRED)
-find_package(Doxygen REQUIRED)
+add_subdirectory("material_lib")
+add_subdirectory("map_drawer")
 
 add_executable(test_app "main.cpp")
 
-add_subdirectory("material_lib")
-add_subdirectory("map_drawer")
-target_link_libraries(test_app PUBLIC material_lib raylib)
+
+target_link_libraries(test_app PUBLIC  doctest::doctest material_lib)
 
 set(DOXYGEN_RECURSIVE YES)
 set(DOXYGEN_EXCLUDE_PATTERNS "*/_deps/*")

@@ -35,6 +35,8 @@
 out
 build
 bin
+CW
+sample
 
 # Other
 CmakeSettings.json
