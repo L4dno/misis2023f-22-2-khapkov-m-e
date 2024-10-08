@@ -13,8 +13,8 @@ int main() {
     Renderer r;
 
     std::vector<std::string> textures =
-    { "../resources/grass.png", "../resources/sand.png", 
-        "../resources/dirt.png", "../resources/snow.png"};
+    { "../resources/lava.png", "../resources/grass.png", 
+        "../resources/dirt.png", "../resources/mud.png"};
 
     for (int i = 0; i < 4; ++i)
         r.SetTextureI(i, textures[i]);
