@@ -62,18 +62,33 @@ const char* fragmentSource = "#version 330\n"
 "    finalColor = texelColor;"
 "}";
 
-// a simple class to help build up faces of a cube
+
+/**
+    \brief Класс, оперирующий с памятью для построения геометрии модели
+*/
 class GeomtryBuilder
 {
 public:
 
     // setup the builder with the mesh it is going to fill out
+
+    /**
+        \brief конструктор инициализирует ссылку на меш, который мы заполняем
+        \param[in, out] mesh ссылка на меш
+    */
     GeomtryBuilder(Mesh& mesh) : MeshRef(mesh)
     {
     }
 
     // we need to know how many triangles are going to be in the mesh before we start
     // this way we can allocate the correct buffer sizes for the mesh
+
+    // function for allocating right buffer size for mesh
+
+    /**
+        \brief Метод, выделяющий необходимые буфферы для хранения геометрических данных
+        \param[in] triangles количество полигонов в меше
+    */
     void Allocate(int triangles)
     {
         // there are 
@@ -94,12 +109,20 @@ public:
         MeshRef.indices = nullptr;
     }
 
-    //inline void SetNormal(Vector3& value) { Normal = value; }
-    //inline void SetNormal(float x, float y, float z) { Normal = Vector3{ x,y,z }; }
+    
     inline void SetSetUV(Vector2& value) { UV = value; }
     inline void SetSetUV(float x, float y) { UV = Vector2{ x,y }; }
     inline void SetSetUV2(float x, float y) { UV2 = Vector2{ x,y }; }
 
+    // func for adding new vertex in a mesh structure
+
+    /**
+        \brief Метод для инициализации вершины в меше нужными координатами
+        \param[in] vertex координаты опорной точки для остальных вершин в меше
+        \param[in] xOffset смещение по координате X от опорной точки
+        \param[in] yOffset смещение по координате Y от опорной точки
+        \param[in] zOffset смещение по координате Z от опорной точки
+    */
     inline void PushVertex(Vector3 vertex, float xOffset = 0, float yOffset = 0, float zOffset = 0)
     {
         size_t index = TriangleIndex * 12 + VertIndex * 3;
@@ -153,6 +176,11 @@ protected:
 
 constexpr uint16_t SectorSize = 256;
 
+// class that contains the geometry data for model
+
+/**
+    \brief класс для хранения данных о высоте вершин в части меша
+*/
 class TerrainSector
 {
 public:
@@ -164,6 +192,12 @@ public:
     uint16_t width = SectorSize;
     uint16_t height = SectorSize;
 
+    // method to allocate space for height data
+    // and to fill with 0 values
+
+    /**
+        \brief метод для выделения места для высотных данных и инициализации базовыми значениями
+    */
     void Setup()
     {
         heightmap.reserve(width * height);
@@ -179,6 +213,12 @@ public:
         }
     }
 
+    // reads data from heightmap file
+
+    /**
+        \brief метод для чтения высотных данных из изображения
+        \param[in] img ссылка на объект, хранящий данные из изображения в png
+    */
     void SetupImage(Image& img)
     {
         ImageResize(&img, width, height);
@@ -196,16 +236,35 @@ public:
         }
     }
 
+    // returns linear index in array from h and v cords
+
+    /**
+        \brief метод для получения линейного индекса в массиве по двумерным координатам
+        \param[in] h номер строки
+        \param[in] v номер столбца
+    */
     inline size_t GetIndex(uint16_t h, uint16_t v)
     {
         return (size_t(v) * width) + h;
     }
 
+    // checks if hv cords are in the right bounds
+
+    /**
+        \brief проверяет нахождение координат в допустимых границах
+        \param[in] h номер строки
+        \param[in] v номер столбца
+    */
     bool IsPosValid(uint16_t h, uint16_t v)
     {
         return (h >= 0 && h < width && v >= 0 && v < height);
     }
+    
+    // returns height value for the particular hv point 
 
+    /**
+        \brief возвращает значение высоты в заданной точке
+    */
     float GetHeightmapValue(uint16_t h, uint16_t v)
     {
         if (heightmap.size() == 0)
@@ -217,6 +276,7 @@ public:
         return heightmap[GetIndex(h, v)];
     }
 
+    // returns normal vector for hv point
     Vector3 GetNormalVector(uint16_t h, uint16_t v)
     {
         if (heightmap.size() == 0)
@@ -228,6 +288,11 @@ public:
         return normals[GetIndex(h, v)];
     }
 
+    // changes height value in mesh by xy cords
+
+    /**
+        \brief устанавливает значение высоты в заданной точке
+    */
     void SetHeightmapValue(uint16_t x, uint16_t y, float value)
     {
         if (heightmap.size() == 0)
@@ -242,12 +307,6 @@ public:
         Vector3 P = { 0,0,0 };
 
         float thisH = GetHeightmapValue(h, v);
-
-        /*
-                B
-            A	P	C
-                D
-        */
 
 
         Vector3 A = { -1, 0, GetHeightmapValue(h - 1,v) - thisH };
@@ -275,6 +334,11 @@ public:
         return tempNormals;
     }
 
+    // method sets all points in the mesh with data from heightmap
+
+    /**
+        \brief инициализирует все точки в буфере данными с карты высот
+    */
     void BuildMesh(Mesh& mesh)
     {
         GeomtryBuilder builder(mesh);
@@ -309,7 +373,11 @@ public:
     }
 };
 
+// constructor inits glfw context and prepares geometry data
 
+/**
+    \brief инициализирует glfw контекст и подготавливает геометрические данные
+*/
 Renderer::Renderer() {
     InitWindow(kWindowWidth, kWindowHeight, "Terrain");
 
@@ -327,10 +395,20 @@ Renderer::Renderer() {
     UploadMesh(&mesh, false);
 }
 
+// destructor closes glfw context
+
+/**
+    \brief закрывает glfw контекст
+*/
 Renderer::~Renderer() {
     CloseWindow();
 }
 
+// inits camera, shader and draws the whole model on the screen
+
+/**
+    \brief рисует в окне модель со всеми текстурами
+*/
 void Renderer::DrawSelf() {
     rlFPCamera viewCamera;
     viewCamera.HideCursor = false;
@@ -342,9 +420,9 @@ void Renderer::DrawSelf() {
     Material mat = LoadMaterialDefault();
 
     Material wireMat = LoadMaterialDefault();
-    wireMat.maps[MATERIAL_MAP_ALBEDO].color = BLACK;
+    // dont affect black mesh after shaders
+    wireMat.maps[MATERIAL_MAP_ALBEDO].color = ORANGE;
 
-    // load basic lighting
     
     Shader lightShader = LoadShaderFromMemory(vertexSource, fragmentSource);
     if (IsShaderReady(lightShader)) {
@@ -384,7 +462,7 @@ void Renderer::DrawSelf() {
         // drawing
         BeginDrawing();
         // this may be not useful
-        //DrawTexture(maskTexture, 0, 0, WHITE);
+        DrawTextureEx(mask, { 0,0 }, 0, 0.01, WHITE);
         ClearBackground(SKYBLUE);
 
         //BeginMode3D(viewCamera.GetCamera());
@@ -412,6 +490,13 @@ void Renderer::DrawSelf() {
     }
 }
 
+// loads texture from png file
+
+/**
+    \brief загружает из файла текстуру под номером I
+    \param[in] ind номер загружаемой текстуры
+    \param[in] path путь до файла с текстурой
+*/
 void Renderer::SetTextureI(int ind, const std::string& path) {
     if (ind < 0 || ind>3)
         throw std::exception("In SetTextureI is wrong texture index");
@@ -426,6 +511,12 @@ void Renderer::SetTextureI(int ind, const std::string& path) {
     SetTextureFilter(textures[ind], TEXTURE_FILTER_TRILINEAR);
 }
 
+// loads color mask from file
+
+/**
+    \brief загружает из файла текстурную карту
+    \param[in] path путь до файла с текстурой
+*/
 void Renderer::SetMask(const std::string& path) {
     Image img = LoadImage(path.c_str());
     if (!IsImageReady(img)) {

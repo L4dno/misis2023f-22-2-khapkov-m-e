@@ -11,7 +11,6 @@
 int main() {
 
     Renderer r;
-
     std::vector<std::string> textures =
     { "../resources/lava.png", "../resources/grass.png", 
         "../resources/dirt.png", "../resources/mud.png"};
@@ -21,8 +20,6 @@ int main() {
     r.SetMask("../resources/painting.png");
 
     r.DrawSelf();
-
-    
 
     return 0;
 }

@@ -22,7 +22,5 @@ int main() {
 
     r.DrawSelf();
 
-
-
     return 0;
 }

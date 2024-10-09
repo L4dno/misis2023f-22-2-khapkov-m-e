@@ -8,6 +8,7 @@ target_link_libraries(test_app PUBLIC  doctest::doctest material_lib)
 
 set(DOXYGEN_RECURSIVE YES)
 set(DOXYGEN_EXCLUDE_PATTERNS "*/_deps/*")
+set(DOXYGEN_EXCLUDE "material_lib/include/camera/rlFPCamera.h" "material_lib/rlFPCamera.cpp")
 set(DOXYGEN_GENERATE_RTF YES)
 set(DOXYGEN_OUTPUT_LANGUAGE "Russian")
 set(DOXYGEN_GENERATE_HTML NO)

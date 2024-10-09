@@ -1,4 +1,5 @@
-﻿#include "raylib.h"
+﻿#include <raylib.h>
+
 #include <cmath>
 #include <iostream>
 #include <vector>
@@ -6,7 +7,15 @@
 
 // x and y are coordinates and z is a color
 using Grid = std::vector<std::vector<Vector3>>;
-// Function to calculate the positions of hexes in a 2D hexagonal grid
+
+
+/**
+    \brief Вычисляет позицию каждого гекса на 2D сетке
+    \param[in] numRows число строк в сетке гексов
+    \param[in] numCols число столбцов в сетке гексов
+    \param[in] hexSize радиус гексов
+    \return двумерный массив, хранящий данные о каждом гексе в сетке
+*/
 Grid CalculateHexGridPositions(int numRows, int numCols, double hexSize) {
     Grid gridPositions(numRows, std::vector<Vector3>(numCols));
 
@@ -33,6 +42,12 @@ Grid CalculateHexGridPositions(int numRows, int numCols, double hexSize) {
     return gridPositions;
 }
 
+// sets random colors to hexes in a grid
+
+/**
+    \brief Присваивает случайные цвета rgb каждому гексу в сетке
+    \param[in,out] grid ссылка на двумерный массив с данными о каждом гексе
+*/
 void ColorizeTextMap(Grid& grid) {
     if (grid.size() == 0)
         throw std::exception("ColorizeTextMap received empty grid");
@@ -48,6 +63,9 @@ void ColorizeTextMap(Grid& grid) {
     }
 }
 
+/**
+    \brief Рисует в png файл нужную конфигурацию гексов с соответствующими цветами
+*/
 int main() {
     
     const int screenWidth = 1024;
