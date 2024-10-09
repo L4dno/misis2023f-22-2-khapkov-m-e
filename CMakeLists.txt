@@ -15,7 +15,7 @@ set (CMAKE_RUNTIME_OUTPUT_RELWITHDEBINFO ${CMAKE_CURRENT_SOURCE_DIR}/bin.relwith
 project(khapkov-m-e-22-2)
 
 find_package(raylib CONFIG REQUIRED)
-find_package(doctest CONFIG REQUIRED)
+find_package(doctest CONFIG)
 find_package(Doxygen REQUIRED)
 
 add_subdirectory(prj.cw)
